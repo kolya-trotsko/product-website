@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+{% load static %}
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/header.css' %}">
+</head>
+
+<div class="header-container">
+    <header class="nav" style="display: flex;">
+        <a href="{% url 'home' %}">
+            <img src="/media/logos/ks_klimat_kh.PNG" alt="Logo">
+        </a>
+
+        <ul>
+            <li class="nav-item"><a href="{% url 'home' %}" class="nav-link" aria-current="page">Головна</a></li>
+            <li class="nav-item"><a href="{% url 'catalog' %}" class="nav-link" aria-current="page">Каталог</a></li>
+            <li class="nav-item"><a href="{% url 'service' %}" class="nav-link" aria-current="page">Послуги</a></li>
+            <li class="nav-item"><a href="{% url 'policy' %}" class="nav-link" aria-current="page">Політика</a></li>
+
+            {% if user.is_authenticated %}
+                <li class="nav-item"><a href="{% url 'admin:index' %}" class="nav-link" aria-current="page">Адмін</a></li>
+            {% endif %}
+        </ul>
+    </header>
+</div>

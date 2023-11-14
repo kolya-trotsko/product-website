@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block address %}
+    {{ contacts.address }}
+{% endblock %}
+
+{% block email %}
+    {{ contacts.email }}
+{% endblock %}
+
+{% block phone %}
+    {{ contacts.phone }}
+{% endblock %}
+
+{% block instagram_link %}
+    {{ contacts.instagram_link }}
+{% endblock %}
+
+{% block telegram_link %}
+    {{ contacts.telegram_link }}
+{% endblock %}
+
+{% block viber_link %}
+    {{ contacts.viber_link }}
+{% endblock %}
+
+{% block content %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/conditioner_detail.css' %}">
+    <script src="{% static 'js/conditioner_detail.js' %}"></script>
+</head>
+
+<div class="container">
+    <div class="product-info">
+        <img src="{{ conditioner.photo.url }}" alt="{{ conditioner.name }}" class="conditioner-image">
+        <div class="product-details">
+            <h2>{{ conditioner.name }}</h2>
+            <p class="price">Ціна: {{ conditioner.price|floatformat:"2" }} грн</p>
+            <p class="manufacturer">Виробник: {{ conditioner.company.name }}</p>
+            <p class="description">Опис: {{ conditioner.description|safe }}</p>
+            <p class="colors">Доступні кольори:</p>
+            <ul class="color-list">
+                {% for color in conditioner.colors.all %}
+                    <li class="color-box" style="background-color: {{ color.hash }};"></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <button class="add-to-cart-button" id="show-popup-button">Замовити кондиціонер</button>
+
+    <div id="popup-container" class="popup" style="display: none;">
+        <div class="popup-content">
+            <form method="post" action="{% url 'conditioner_detail' conditioner.id %}" id="order-form">
+                {% csrf_token %}
+                <label for="name">Ім'я</label>
+                <input type="text" name="name" id="name" class="input-field" required>
+
+                <label for="phone">Номер телефону</label>
+                <input type="text" name="phone" id="phone" class="input-field" required>
+
+                <label for="address">Адреса</label>
+                <input type="text" name="address" id="address" class="input-field" required>
+
+                <label for="color">Колір</label>
+                <select name="color" id="color" class="input-field" required>
+                    {% for color in conditioner.colors.all %}
+                        <option value="{{ color.id }}">{{ color.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="submit-button">Відправити</button>
+            </form>
+            <button class="close-button" id="close-popup-button">Закрити</button>
+        </div>
+    </div>
+
+    <div class="add-product-review">
+        <h3>Додати відгук:</h3>
+        <form method="post" action="{% url 'add_review' conditioner.id %}">
+
+            {% csrf_token %}
+            <label for="rating">Оцінка товару:</label>
+            <div class="rating-stars">
+                <input type="radio" name="rating" value="1" id="star1"><label for="star1" class="star">★</label>
+                <input type="radio" name="rating" value="2" id="star2"><label for="star2" class="star">★</label>
+                <input type="radio" name="rating" value="3" id="star3"><label for="star3" class="star">★</label>
+                <input type="radio" name="rating" value="4" id="star4"><label for="star4" class="star">★</label>
+                <input type="radio" name="rating" value="5" id="star5"><label for="star5" class="star">★</label>
+            </div>
+
+            <label for="text">Ваш відгук:</label>
+            <textarea id="text" name="text" rows="4" cols="50" required></textarea>
+            
+            <label for="user">Ваш email або ім'я:</label>
+            <textarea id="user" name="user" rows="2" required placeholder="Ваш email або ім'я"></textarea>
+
+            <input type="submit" value="Надіслати відгук">
+        </form>
+    </div>
+
+    <div class="product-reviews">
+        <h3>Відгуки:</h3>
+        <ul>
+            {% if reviews %}
+                {% for review in reviews %}
+                    <li>
+                        <p class="rating">
+                            {% for i in "x"|rjust:review.rating %}
+                                ★
+                            {% endfor %}
+                        </p>
+                        <p class="author">{{ review.user }}</p>
+                        <p>{{ review.text }}</p>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <p>На цей товар ще немає жодного відгука</p>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

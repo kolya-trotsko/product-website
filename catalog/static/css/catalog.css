@@ -1,0 +1,88 @@
+input[name="query"] {
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+/* Style for the search button */
+button[type="submit"] {
+    background-color: #0d7fe1;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* Style for the color and company selects */
+select.color-filter, select.company-filter {
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.conditioner-grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.conditioner-item {
+    width: 30%;
+    margin: 1%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 5px #888888;
+    transition: background-color 0.2s;
+    cursor: pointer; /* Додайте курсор на товари для вказівки, що вони клікабельні */
+}
+
+.color-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 10px;
+  }
+
+  .color-box {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #000;
+    border-radius: 50%;
+  }
+  
+.conditioner-item:hover {
+    background-color: #e0e0e0;
+}
+
+.conditioner-image {
+    max-width: 100%;
+    height: auto;
+}
+
+.color-filter {
+    margin-top: 10px;
+}
+
+.company-filter {
+    margin-top: 10px;
+}
+
+.pagination {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.pagination a {
+    text-decoration: none;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    margin-right: 5px;
+}
+
+.pagination a:hover {
+    background-color: #e0e0e0;
+}

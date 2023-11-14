@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block address %}
+    {{ contacts.address }}
+{% endblock %}
+
+{% block email %}
+    {{ contacts.email }}
+{% endblock %}
+
+{% block phone %}
+    {{ contacts.phone }}
+{% endblock %}
+
+{% block instagram_link %}
+    {{ contacts.instagram_link }}
+{% endblock %}
+
+{% block telegram_link %}
+    {{ contacts.telegram_link }}
+{% endblock %}
+
+{% block viber_link %}
+    {{ contacts.viber_link }}
+{% endblock %}
+
+{% block content %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/service/service.css' %}">
+    <script src="{% static 'js/service.js' %}"></script>
+</head>
+
+<h2>Причини звернутися до нас</h2>
+
+<div class="small-talk">
+    <div class="text-sections">
+        <section>
+            <p>Наші майстри мають великий досвід у сервісному обслуговуванні кондиціонерів.</p>
+        </section>
+
+        <section>
+            <p>Наші фахівці готові відновити працездатність вашого кондиціонера, замінити деталі та усунути помилки монтажу.</p>
+        </section>
+
+        <section>
+            <p>Ми надаємо консультації з експлуатації та самостійного обслуговування.</p>
+        </section>
+
+        <section>
+            <p>Ми використовуємо тільки сучасне обладнання та передові технології для ефективного та безпечного обслуговування кондиціонерів.</p>
+        </section>
+    </div>
+
+    <div class="image-section">
+        <img src="/media/service/PhotoRoom-20231113_215321.png" alt="Фото сервісу" class="floating-image">
+    </div>
+</div>
+
+
+<h2 class="page-title">ЦІНИ НА ОБСЛУГОВУВАННЯ</h2>
+
+<ul class="service-list">
+    {% if services %}
+        {% for service in services %}
+            <li class="service-item">
+                <span>{{ service.service_name }}</span>
+                <span>{{ service.service_price }}</span>
+            </li>
+        {% endfor %}
+    {% else %}
+        <li class="service-item">
+            На даний момент ми не надаємо жодних послуг
+        </li>
+    {% endif %}
+</ul>
+
+<button class="cta-button" id="show-popup-button">Замовити послугу</button>
+
+<div id="popup-container" class="popup" style="display: none;">
+    <div class="popup-content">
+        <form method="post" action="{% url 'service' %}" id="order-form">
+            {% csrf_token %}
+            <input type="text" name="name" id="name" placeholder="Ваше ім'я" class="input-field" required>
+            <input type="text" name="phone" id="phone" placeholder="Ваш номер телефону" class="input-field" required>
+            <input type="text" name="address" id="address" placeholder="Ваша адреса" class="input-field" required>
+
+            <fieldset style="border: none; margin-top: 30px;">
+                {% if services %}
+                    {% for service in services %}
+                        <label class="radio-label">
+                            <input type="checkbox" name="services" value="{{ service.service_name }}">
+                            <span>{{ service.service_name }}</span>
+                        </label>
+                    {% endfor %}
+                {% else %}
+                    <p>На даний момент ми не надаємо жодних послуг.</p>
+                {% endif %}
+            </fieldset>
+
+            <button type="submit" class="submit-button">Відправити</button>
+        </form>
+        <button class="close-button" id="close-popup-button">Закрити</button>
+    </div>
+</div>
+{% endblock %}

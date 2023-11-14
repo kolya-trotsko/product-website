@@ -1,0 +1,4 @@
+venv/
+media/*
+ks_klimat_kh/settings.py
+db.sqlite3

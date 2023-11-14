@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block address %} {{ contacts.address }} {% endblock %}
+{% block email %} {{ contacts.email }} {% endblock %}
+{% block phone %} {{ contacts.phone }} {% endblock %}
+{% block instagram_link %} {{ contacts.instagram_link }} {% endblock %}
+{% block telegram_link %} {{ contacts.telegram_link }} {% endblock %}
+{% block viber_link %} {{ contacts.viber_link }} {% endblock %}
+
+{% block content %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home/home.css' %}">
+    <script src="{% static 'js/home.js' %}"></script>
+</head>
+
+<div style="background-image: url('/media/home/background.jpg'); background-size: cover; padding-bottom: 10%; padding-top: 10%; width: 100%;">
+    <h1 class="page-title">Комплексне чищення кондиціонерів в Харкові</h1>
+
+    <div class="service-offerings">
+        <div class="service-offering">
+            <h3>Продаж кондиціонерів</h3>
+            <p>Великий вибір нових кондиціонерів та систем кондиціювання.</p>
+        </div>
+        <div class="service-offering">
+            <h3>Ремонт та обслуговування</h3>
+            <p>Надійний ремонт та обслуговування кондиціонерів.</p>
+        </div>
+        <div class="service-offering">
+            <h3>Чистка кондиціонерів</h3>
+            <p>Забезпечення правильної роботи через чистку кондиціонерів.</p>
+        </div>
+    </div>
+
+    <button class="cta-button" id="show-popup-button">Замовити послугу</button>
+    <div id="popup-container" class="popup" style="display: none;">
+        <div class="popup-content">
+            <form method="post" action="{% url 'home' %}" id="order-form">
+                {% csrf_token %}
+                <input type="text" name="name" id="name" placeholder="Ваше ім'я" class="input-field" required>
+                <input type="text" name="phone" id="phone" placeholder="Ваш номер телефону" class="input-field" required>
+                <fieldset style="border: none; margin-top: 30px;">
+                    <label class="radio-label">
+                        <input type="radio" name="option" value="Квартира" required>
+                        <span>Квартира</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="option" value="Офіс" required>
+                        <span>Офіс</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="option" value="Інше приміщення" required>
+                        <span>Інше приміщення</span>
+                    </label>
+                </fieldset>
+                <button type="submit" class="submit-button">Відправити</button>
+            </form>
+            <button class="close-button" id="close-popup-button">Закрити</button>
+        </div>
+    </div>
+</div>
+
+<p class="title">Ваш кондиціонер вимагає чистки, якщо:</p>
+
+<div class="cleaning-list">
+    <div class="cleaning-item item-1">
+        <img src="/media/home/photo_6.png" alt="Конденсація" width="60px">
+        <p>У вас почала текти вода з кондиціонера</p>
+    </div>
+
+    <div class="cleaning-item item-2">
+        <img src="/media/home/photo_1.png" alt="Немає гріючого / охолоджуючого повітря" width="60px">
+        <p>Прилад не гріє і не охолоджує, як раніше</p>
+    </div>
+
+    <div class="cleaning-item item-3">
+        <img src="/media/home/photo_2.png" alt="Неприємний запах" width="60px">
+        <p>Під час роботи в приміщенні з'являється неприємний запах</p>
+    </div>
+
+    <div class="cleaning-item item-5">
+        <img src="/media/home/photo_4.png" alt="Немає чищення протягом року" width="60px">
+        <p>Ви не проводили комплексне чищення понад рік</p>
+    </div>
+
+    <div class="cleaning-item item-6">
+        <img src="/media/home/photo_5.png" alt="Килим та домашні тварини" width="60px">
+        <p>У вас килимове покриття і домашні тварини</p>
+    </div>
+</div>
+
+
+
+<p class="title">Що входить в етапи очищення:</p>
+
+<div class="basic-container" style="display: flex; max-height: 540px;">
+    <ul class="cleaning-steps-list">
+        <li class="cleaning-step">
+            <span class="cleaning-step-bullet">1. </span> Розбирання внутрішнього блоку
+        </li>
+        <li class="cleaning-step">
+            <span class="cleaning-step-bullet">2. </span> Мойка корпусу і фільтрів
+        </li>
+        <li class="cleaning-step">
+            <span class="cleaning-step-bullet">3. </span> Мойка вентилятора
+        </li>
+        <li class="cleaning-step">
+            <span class="cleaning-step-bullet">4. </span> Мойка високим тиском теплообмінника
+        </li>
+        <li class="cleaning-step">
+            <span class="cleaning-step-bullet">5. </span> Видалення плісняви, грибка, неприємного запаху
+        </li>
+        <li class="cleaning-step">
+            <span class="cleaning-step-bullet">6. </span> Прочищення дренажної системи
+        </li>
+        <li class="cleaning-step">
+            <span class="cleaning-step-bullet">7. </span> Обробка антигрибковим засобом
+        </li>
+        <li class="cleaning-step">
+            <span class="cleaning-step-bullet">8. </span> Мойка високим тиском зовнішнього блоку
+        </li>
+    </ul>
+    <div class="photo-container">
+        <div class="carousel">
+            <img src="/media/home/7beca200ef016ac3be3ffc80cfc153fa.png">
+            <img src="/media/home/4istka_s_razborom.jpg">
+            <img src="/media/home/Master_promyl_soderz.jpg">
+            <img src="/media/home/0_orig.jpg">
+            <img src="/media/home/filtr.jpg">
+            <img src="/media/home/167578_1683100683_0.jpg">
+            <img src="/media/home/uefifgga9t0_5d0a2e0c6310b.jpg">
+            <img src="/media/home/moyka-vneshnego-bloka.jpg">
+        </div>
+    </div>
+</div>
+
+<p class="title">Наші партнери:</p>
+
+<div class="basic-container" style="background-color: #0d7fe1;">
+    <ul class="partner-list">
+        {% for company in companies %}
+                {% if company.logo %}
+                    <div class="partner">
+                        <img src="{{ company.logo.url }}" class="partner-logo">
+                    </div>
+                {% endif %}
+        {% endfor %}
+    </ul>
+</div> 
+
+
+<p class="title">Чому ми?</p>
+
+<div class="basic-container" style="display: flex;">
+    <div class="why-us">
+        <p>Робимо свою роботу швидко і якісно. 45 хвилин і все готово!</p>
+        <p>Ми професіонали своєї справи. 10 роки досвіду роботи в цій сфері</p>
+        <p>Мойка високим тиском зовнішнього блоку</p>
+        <p>Плата за чищення після закінчення роботи</p>
+        <p>Працюємо професійною мийкою Bosch</p>
+        <p>Не бруднимо ваші меблі й стіни, використовуємо сервісний чохол (капюшон) на внутрішній блок</p>
+    </div>
+
+    <div class="customer-reviews">
+        <div id="slider-container" class="slider-container">
+            <div class="customer-review" id="review1">
+                <img src="/media/home/photo_1.png" alt="Відгук 1">
+            </div>
+            <div class="customer-review" id="review2">
+                <img src="/media/home/photo_2.png" alt="Відгук 2">
+            </div>
+        </div>
+        <div class="slider-controls">
+            <button class="button-nav" id="prevReviewButton">Попередній</button>
+            <button class="button-nav" id="nextReviewButton">Наступний</button>
+        </div>
+    </div>
+</div>   
+
+<p class="title">Питання-відповідь</p>
+
+<div class="basic-container">
+    <div class="faq-item">
+        <h3>Стіни та шпалери брудняться?</h3>
+        <p>Ні. Наш майстер працює бережно з використанням сервісного чохла (капюшона), ваша кімната залишиться сухою та чистою після миття кондиціонера</p>
+    </div>
+    <div class="faq-item">
+        <h3>Скільки часу займає чищення?</h3>
+        <p>45-60 хвилин залежно від міри забруднення вашого кондиціонера</p>
+    </div>
+    <div class="faq-item">
+        <h3>Як ви миєте зовнішній блок?</h3>
+        <p>Зовнішній блок вимивається водою під високим тиском за допомогою професійної мийки Bosch</p>
+    </div>
+    <div class="faq-item">
+        <h3>Кондиціонер взагалі не холодить/обігріває. Що робити?</h3>
+        <p>Наш майстер приїде до вас на діагностику і подивиться, що можна зробити для його стабільної роботи та полагодить його</p>
+    </div>
+    <div class="faq-item">
+        <h3>Ви продаєте Кондиціонери?</h3>
+        <p>Так, так само, у нас ви можете придбати Кондиціонери з Гарантією від 2-х років і нижче цін у звичайному магазині. Ми беремо техніку безпосередньо від постачальників</p>
+    </div>
+</div>
+{% endblock %}

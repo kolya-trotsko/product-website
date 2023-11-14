@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block address %} {{ contacts.address }} {% endblock %}
+{% block email %} {{ contacts.email }} {% endblock %}
+{% block phone %} {{ contacts.phone }} {% endblock %}
+{% block instagram_link %} {{ contacts.instagram_link }} {% endblock %}
+{% block telegram_link %} {{ contacts.telegram_link }} {% endblock %}
+{% block viber_link %} {{ contacts.viber_link }} {% endblock %}
+
+{% block content %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/catalog.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/catalog.js' %}"></script>
+</head>
+
+<main>
+    <form method="get" action="{{ conditioner.id }}">
+        <input type="text" name="query" value="{{ search_query }}" placeholder="Пошук...">
+        <button type="submit">Шукати</button> 
+        <br>
+        <select name="color" class="color-filter">
+            <option value="">Колір</option>
+            {% for color in colors %}
+                <option value="{{ color }}">{{ color }}</option>
+            {% endfor %}
+        </select>
+        <select name="company" class="company-filter">
+            <option value="">Виробник</option>
+            {% for company in companies %}
+                <option value="{{ company }}">{{ company }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <div class="conditioner-grid">
+        {% for conditioner in conditioners %}
+            <div class="conditioner-item" data-href="{{ conditioner.id }}">
+                <img src="{{ conditioner.photo.url }}" alt="{{ conditioner.name }}" class="conditioner-image">
+                <h2>{{ conditioner.name }}</h2>
+                <p>Ціна: {{ conditioner.price }} гривень</p>
+                <p>Виробник: {{ conditioner.company.name }}</p>
+                <p class="colors">Доступні кольори:</p>
+                <ul class="color-list">
+                    {% for color in conditioner.colors.all %}
+                        <li class="color-box" style="background-color: {{ color.hash }};"></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% empty %}
+            <p>Не знайдено результату</p>
+        {% endfor %}
+    </div>    
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if conditioners.has_previous %}
+                <a href="?page=1&query={{ search_query }}&color={{ request.GET.color }}&company={{ request.GET.company }}">Перша</a>
+                <a href="?page={{ conditioners.previous_page_number }}&query={{ search_query }}&color={{ request.GET.color }}&company={{ request.GET.company }}">Попередня</a>
+            {% endif %}
+            
+            <span class="current-page">
+                Сторінка {{ conditioners.number }} з {{ conditioners.paginator.num_pages }}.
+            </span>
+            
+            {% if conditioners.has_next %}
+                <a href="?page={{ conditioners.next_page_number }}&query={{ search_query }}&color={{ request.GET.color }}&company={{ request.GET.company }}">Наступна</a>
+                <a href="?page={{ conditioners.paginator.num_pages }}&query={{ search_query }}&color={{ request.GET.color }}&company={{ request.GET.company }}">Остання</a>
+            {% endif %}
+        </span>
+    </div>
+
+</main>
+
+{% endblock %}

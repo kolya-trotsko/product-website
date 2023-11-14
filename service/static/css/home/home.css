@@ -1,0 +1,377 @@
+.main-content {
+    margin-top: 0px;
+    padding: 0px;
+}
+
+/* Оголошення основних стилів для .popup */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.popup-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    color: rgb(243, 243, 243);
+    background-color: transparent;
+    border: none;
+}
+
+/* Стилі для #order-form */
+#order-form {
+    text-align: left;
+}
+
+#order-form label {
+    margin-bottom: 10px;
+    display: block;
+}
+
+.input-field {
+    width: 95%;
+    margin: 10px 0;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.submit-button {
+    background-color: #0d7fe1;
+    color: #fff;
+    padding: 15px 30px;
+    font-size: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    margin-top: 30px;
+}
+
+.submit-button:hover {
+    background-color: #0d2de1;
+}
+
+#order-form input::placeholder {
+    color: #555;
+}
+
+/* Стилі для .service-offerings */
+.service-offerings {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    justify-content: center;
+}
+
+.service-offering {
+    background: #f6f6f6c9;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.service-offering h3 {
+    font-size: 24px;
+    margin: 10px 0;
+}
+
+.service-offering p {
+    font-size: 16px;
+}
+
+.service-offering:hover {
+    background: #f6f6f6;
+}
+
+/* Стилі для .cta-button */
+.cta-button {
+    background-color: #0d7fe1;
+    color: #fff;
+    padding: 15px 30px;
+    font-size: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: block;
+    margin: 50px auto;
+}
+
+.cta-button:hover {
+    background-color: #0d2de1;
+}
+
+/* Стилі для .cleaning-list */
+.cleaning-list {
+    display: flex;
+    justify-content: space-around;
+}
+
+.cleaning-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 10px;
+    box-sizing: border-box;
+    color: #fff;
+    transition: background-color 0.3s;
+}
+
+.item-1 {
+    background: #3b7e9f;
+}
+
+.item-2 {
+    background: #4f95b7;
+}
+
+.item-3 {
+    background: #5c9fbf;
+}
+
+.item-4 {
+    background: #6cb1d1;
+}
+
+.item-5 {
+    background:#7bbfdf;
+}
+
+.item-6 {
+    background: #8fd2f3;
+}
+
+.cleaning-item img {
+    width: 40px;
+    margin-bottom: 10px;
+}
+
+.cleaning-item:hover {
+    background-color: #0d2de1;
+}
+
+
+
+
+.cleaning-steps-list {
+    list-style: none;
+    padding: 0;
+    width: 40%;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cleaning-step {
+    margin: 0;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.cleaning-step-bullet {
+    font-weight: bold;
+    color: #007BFF;
+    margin-right: 15px;
+}
+
+.cleaning-step:hover {
+    background-color: #e0e0e0;
+}
+
+.carousel {
+    display: flex;
+}
+
+.carousel img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.3s ease;
+}
+
+.photo-container {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border-radius: 10px;
+    margin: 16px;
+    width: 60%;
+}
+
+
+/* Стилі для .partner-list та .partner */
+.partner-list {
+    width: 100%;
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.partner {
+    margin-left: 20px;
+    margin-right: 20px;
+    text-align: center;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s;
+    width: 70px;
+    height: 70px;
+}
+
+.partner:hover {
+    transform: scale(1.05);
+}
+
+.partner-logo {
+    width: 70px;
+    min-height: 50px;
+    display: block;
+    margin: 0 auto 10px;
+}
+
+/* Адаптивний дизайн для .partner-list */
+@media (max-width: 70px) {
+    .partner-list {
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+    }
+}
+
+.why-us {
+    width: 50%;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+}
+
+.why-us p {
+    margin-left: 20px;
+    font-size: 18px;
+    transition: transform 0.3s;
+}
+
+.why-us p:hover {
+    transform: scale(1.05);
+}
+
+.customer-reviews {
+    width: 50%;
+}
+
+.slider-container {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+    height: 90%;
+}
+
+.customer-review {
+    flex: 0 0 100%;
+    text-align: center;
+    display: none;
+}
+
+.customer-review img {
+    width: auto;
+    height: 355px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.slider-controls {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.button-nav {
+    cursor: pointer;
+    padding: 8px 16px;
+    margin: 0 5px;
+    background-color: #0d7fe1;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+}
+
+.button-nav:hover{
+    background-color: #0d2de1
+}
+
+
+/* Стилі для .faq-item */
+.faq-item h3 {
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    margin: 0;
+}
+
+.faq-item h3::after {
+    content: '+';
+    transition: transform 0.3s;
+}
+
+.faq-item.active h3::after {
+    transform: rotate(45deg);
+}
+
+/* Стилі для відповідей */
+.faq-item p {
+    display: none;
+    margin: 0;
+    margin-left: 20px;
+    padding: 10px 0;
+    font-size: 16px;
+    text-align: left;
+}
+
+.faq-item.active p {
+    display: block;
+}

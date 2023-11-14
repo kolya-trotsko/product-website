@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}KS KLIMAT KH{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+    <link rel="icon" type="image/png" href="/media/logos/favicon.ico">
+</head>
+
+<body>
+    {% block header %}
+        {% include 'header.html' %}
+    {% endblock %}
+    
+    <main class="main-content">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {% block footer %}
+        <footer class="site-footer">
+            <div style="text-align: left;">
+                <h4>Зв'язатися з нами</h4>
+                <ul>
+                    <li>Адреса: {% block address %}Default Address{% endblock %}</li>
+                    <li>email: {% block email %}Default email{% endblock %}</li>
+                    <li>Телефон: {% block phone %}Default Phone{% endblock %}</li>
+                </ul>
+            </div>
+
+            <div>
+                <ul style="width: 180px;">
+                    <li>
+                        <a href="{% block instagram_link %}{% endblock %}" style="margin-right: 15px;">
+                            <img src="/media/logos/Instagram.png" alt="Instagram" width=40px>
+                        </a>
+                        <a href="{% block telegram_link %}{% endblock %}" style="margin-right: 15px;">
+                            <img src="/media/logos/Telegram.png" alt="Telegram" width=40px>
+                        </a>
+                        <a href="{% block viber_link %}{% endblock %}" style="margin-right: 15px;">
+                            <img src="/media/logos/Viber.png" alt="Viber" width=40px>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </footer>
+    {% endblock %}  
+</body>
+</html>
