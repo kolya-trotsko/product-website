@@ -1,0 +1,1 @@
+web: gunicorn ks_klimat_kh.wsgi
