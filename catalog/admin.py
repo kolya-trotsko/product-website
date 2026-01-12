@@ -1,28 +1,46 @@
 from django.contrib import admin
+from django.utils.html import format_html
 from .models import AirConditioner, Color, Company, Review, ConditionerOrder
 
 
-class ColorFilter(admin.SimpleListFilter):
-    title = 'Color'
-    parameter_name = 'color'
-
-    def lookups(self, request, model_admin):
-        return [(color.id, color.name) for color in Color.objects.all()]
-
-    def queryset(self, request, queryset):
-        if self.value():
-            return queryset.filter(colors__id=self.value())
-        else:
-            return queryset
+@admin.register(Company)
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    search_fields = ("name",)
 
 
+@admin.register(Color)
+class ColorAdmin(admin.ModelAdmin):
+    list_display = ("name", "hash")
+    search_fields = ("name", "hash")
+
+
+@admin.register(AirConditioner)
 class AirConditionerAdmin(admin.ModelAdmin):
-    list_filter = (ColorFilter,)
-    filter_horizontal = ('colors',)  # Дозволить вибирати кілька кольорів зі списку
+    list_display = ("name", "company", "price", "photo_preview")
+    list_filter = ("company", "colors")
+    search_fields = ("name", "company__name")
+    list_select_related = ("company",)
+    filter_horizontal = ("colors",)
+
+    @admin.display(description="????")
+    def photo_preview(self, obj):
+        if not obj.photo:
+            return "?"
+        return format_html('<img src="{}" alt="{}" style="height:50px;"/>', obj.photo.url, obj.name)
 
 
-admin.site.register(AirConditioner, AirConditionerAdmin)
-admin.site.register(Color)
-admin.site.register(Company)
-admin.site.register(Review)
-admin.site.register(ConditionerOrder)
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ("conditioner", "user", "rating")
+    list_filter = ("rating", "conditioner")
+    search_fields = ("user", "conditioner__name")
+    list_select_related = ("conditioner",)
+
+
+@admin.register(ConditionerOrder)
+class ConditionerOrderAdmin(admin.ModelAdmin):
+    list_display = ("name", "phone", "conditioner", "color")
+    list_filter = ("conditioner", "color")
+    search_fields = ("name", "phone", "address", "conditioner__name")
+    list_select_related = ("conditioner", "color")

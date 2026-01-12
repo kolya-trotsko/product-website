@@ -1,0 +1,52 @@
+body {
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+}
+
+#header {
+    background: #0d7fe1;
+    color: #fff;
+}
+
+#branding h1,
+#branding h1 a {
+    color: #fff;
+    font-weight: 700;
+}
+
+#header a:link,
+#header a:visited {
+    color: #fff;
+}
+
+#user-tools {
+    font-weight: 600;
+}
+
+.module h2,
+.module caption,
+.inline-group h2 {
+    background: #e8f2ff;
+    color: #0d7fe1;
+}
+
+.button,
+input[type="submit"],
+input[type="button"],
+input[type="reset"] {
+    background: #0d7fe1;
+    border-color: #0d7fe1;
+}
+
+.button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+input[type="reset"]:hover {
+    background: #0b6fca;
+    border-color: #0b6fca;
+}
+
+@media (max-width: 600px) {
+    #header {
+        padding: 10px 16px;
+    }
+}

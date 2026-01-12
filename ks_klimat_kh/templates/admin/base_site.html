@@ -1,5 +1,9 @@
-{% extends 'admin/base.html' %}
+{% extends "admin/base_site.html" %}
 {% load static %}
+
+{% block branding %}
+    <h1 id="site-name">KS KLIMAT KH — Адмін</h1>
+{% endblock %}
 
 {% block extrastyle %}
     {{ block.super }}
