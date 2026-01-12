@@ -26,7 +26,11 @@ SECRET_KEY = 'django-insecure-3jcq!644v=0py*t-h_(&gp6l4o%8^&2o0$!lib!r=ynpj$^2q+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ks-klimat-kh.herokuapp.com', 'localhost']
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "192.168.1.14",
+]
 
 APPS = [    
     'catalog',
