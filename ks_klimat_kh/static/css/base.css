@@ -5,6 +5,15 @@ body {
     padding: 0;
 }
 
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
 .basic-container {
     margin: 20px 0;
     text-align: center;
@@ -59,6 +68,7 @@ body {
 .site-footer ul {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 .site-footer ul li {
@@ -74,4 +84,190 @@ body {
 .social-icon {
     width: 40px;
     height: 40px;
+}
+
+.footer-left {
+    text-align: left;
+}
+
+.social-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.social-items {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.social-link {
+    display: inline-flex;
+}
+
+.color-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 10px;
+}
+
+.color-box {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #000;
+    border-radius: 50%;
+}
+
+.form-fieldset {
+    border: none;
+    margin-top: 30px;
+    padding: 0;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.popup-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    color: rgb(243, 243, 243);
+    background-color: transparent;
+    border: none;
+}
+
+#order-form {
+    text-align: left;
+}
+
+#order-form label {
+    margin-bottom: 10px;
+    display: block;
+}
+
+.input-field {
+    width: 95%;
+    margin: 10px 0;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.submit-button {
+    background-color: #0d7fe1;
+    color: #fff;
+    padding: 15px 30px;
+    font-size: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    margin-top: 30px;
+}
+
+.submit-button:hover {
+    background-color: #0d2de1;
+}
+
+#order-form input::placeholder {
+    color: #555;
+}
+
+.cta-button {
+    background-color: #0d7fe1;
+    color: #fff;
+    padding: 15px 30px;
+    font-size: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: block;
+    margin: 50px auto;
+}
+
+.cta-button:hover {
+    background-color: #0d2de1;
+}
+
+@media (max-width: 900px) {
+    .main-content {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 600px) {
+    .basic-container {
+        margin: 16px 0;
+        padding: 16px;
+    }
+
+    .title {
+        font-size: 20px;
+        padding-top: 30px;
+        padding-bottom: 20px;
+    }
+
+    .page-title {
+        font-size: 24px;
+        padding-bottom: 20px;
+    }
+
+    .site-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 24px;
+    }
+
+    .site-footer h4 {
+        font-size: 22px;
+    }
+
+    .site-footer ul li {
+        margin: 12px 0;
+    }
+
+    .popup-content {
+        max-width: 92vw;
+        padding: 20px;
+    }
+
+    .input-field {
+        width: 100%;
+    }
+
+    .cta-button {
+        width: 90%;
+        font-size: 18px;
+    }
 }

@@ -5,7 +5,7 @@ function setupPopup() {
 
     if (showPopupButton && popupContainer && closePopupButton) {
         showPopupButton.addEventListener("click", function () {
-            popupContainer.style.display = "block";
+            popupContainer.style.display = "flex";
         });
 
         closePopupButton.addEventListener("click", function () {

@@ -50,7 +50,7 @@
 
     <button class="add-to-cart-button" id="show-popup-button">Замовити кондиціонер</button>
 
-    <div id="popup-container" class="popup" style="display: none;">
+    <div id="popup-container" class="popup">
         <div class="popup-content">
             <form method="post" action="{% url 'conditioner_detail' conditioner.id %}" id="order-form">
                 {% csrf_token %}

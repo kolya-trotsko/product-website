@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (showPopupButton && popupContainer && closePopupButton) {
         showPopupButton.addEventListener("click", function () {
-            popupContainer.style.display = "block";
+            popupContainer.style.display = "flex";
         });
 
         closePopupButton.addEventListener("click", function () {
@@ -18,62 +18,112 @@ document.addEventListener("DOMContentLoaded", function () {
     const images = carousel ? carousel.querySelectorAll('img') : [];
     let currentIndex = 0;
     let autoSwitchInterval;
+    images.forEach(image => {
+        image.style.display = '';
+    });
 
     function showImage(index) {
-        images.forEach(image => image.style.display = 'none');
-        images[index].style.display = 'block';
+        if (!images.length) {
+            return;
+        }
+
+        images.forEach(image => image.classList.remove('is-active'));
+        images[index] && images[index].classList.add('is-active');
+
         cleaningSteps.forEach(step => step.classList.remove('active'));
-        cleaningSteps[index].classList.add('active');
+        cleaningSteps[index] && cleaningSteps[index].classList.add('active');
     }
 
     function autoSwitch() {
+        if (!images.length) {
+            return;
+        }
+
         currentIndex = (currentIndex + 1) % images.length;
         showImage(currentIndex);
     }
 
-    showImage(currentIndex);
-    autoSwitchInterval = setInterval(autoSwitch, 2000);
+    if (images.length) {
+        showImage(currentIndex);
+        carousel && carousel.classList.add('is-ready');
+
+        if (images.length > 1) {
+            autoSwitchInterval = setInterval(autoSwitch, 2000);
+        }
+    }
 
     cleaningSteps.forEach((step, index) => {
         step.addEventListener('mouseenter', () => {
             showImage(index);
-            clearInterval(autoSwitchInterval);
+            autoSwitchInterval && clearInterval(autoSwitchInterval);
+        });
+
+        step.addEventListener('click', () => {
+            showImage(index);
+            autoSwitchInterval && clearInterval(autoSwitchInterval);
         });
 
         step.addEventListener('mouseleave', () => {
-            autoSwitchInterval = setInterval(autoSwitch, 2000);
+            if (images.length > 1) {
+                autoSwitchInterval = setInterval(autoSwitch, 2000);
+            }
         });
     });
 
+    const sliderContainer = document.getElementById('slider-container');
+    const reviews = document.querySelectorAll('.customer-review');
     let currentReview = 1;
+    reviews.forEach(review => {
+        review.style.display = '';
+    });
 
     function showReview(reviewNumber) {
-        const reviewElement = document.getElementById(`review${currentReview}`);
-        reviewElement && (reviewElement.style.display = 'none');
+        if (!reviews.length) {
+            return;
+        }
+
+        reviews.forEach(review => review.classList.remove('is-active'));
 
         const newReviewElement = document.getElementById(`review${reviewNumber}`);
-        newReviewElement && (newReviewElement.style.display = 'block');
-
-        currentReview = reviewNumber;
+        if (newReviewElement) {
+            newReviewElement.classList.add('is-active');
+            currentReview = reviewNumber;
+        }
     }
 
     function prevReview() {
-        const prev = currentReview === 1 ? document.querySelectorAll('.customer-review').length : currentReview - 1;
+        if (!reviews.length) {
+            return;
+        }
+
+        const prev = currentReview === 1 ? reviews.length : currentReview - 1;
         showReview(prev);
     }
 
     function nextReview() {
-        const next = currentReview === document.querySelectorAll('.customer-review').length ? 1 : currentReview + 1;
+        if (!reviews.length) {
+            return;
+        }
+
+        const next = currentReview === reviews.length ? 1 : currentReview + 1;
         showReview(next);
     }
 
-    showReview(1);
+    if (reviews.length) {
+        showReview(1);
+        sliderContainer && sliderContainer.classList.add('is-ready');
+    }
 
     const prevReviewButton = document.getElementById("prevReviewButton");
     const nextReviewButton = document.getElementById("nextReviewButton");
 
-    prevReviewButton && prevReviewButton.addEventListener("click", prevReview);
-    nextReviewButton && nextReviewButton.addEventListener("click", nextReview);
+    if (reviews.length > 1) {
+        prevReviewButton && prevReviewButton.addEventListener("click", prevReview);
+        nextReviewButton && nextReviewButton.addEventListener("click", nextReview);
+    } else {
+        prevReviewButton && (prevReviewButton.style.display = 'none');
+        nextReviewButton && (nextReviewButton.style.display = 'none');
+    }
 
     const faqItems = document.querySelectorAll('.faq-item');
 

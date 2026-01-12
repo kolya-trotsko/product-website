@@ -21,7 +21,7 @@
 
     {% block footer %}
         <footer class="site-footer">
-            <div style="text-align: left;">
+            <div class="footer-left">
                 <h4>Зв'язатися з нами</h4>
                 <ul>
                     <li>Адреса: {% block address %}Default Address{% endblock %}</li>
@@ -30,16 +30,16 @@
                 </ul>
             </div>
 
-            <div>
-                <ul style="width: 180px;">
-                    <li>
-                        <a href="{% block instagram_link %}{% endblock %}" style="margin-right: 15px;">
+            <div class="footer-social">
+                <ul class="social-list">
+                    <li class="social-items">
+                        <a class="social-link" href="{% block instagram_link %}{% endblock %}">
                             <img src="/media/logos/Instagram.png" alt="Instagram" width=40px>
                         </a>
-                        <a href="{% block telegram_link %}{% endblock %}" style="margin-right: 15px;">
+                        <a class="social-link" href="{% block telegram_link %}{% endblock %}">
                             <img src="/media/logos/Telegram.png" alt="Telegram" width=40px>
                         </a>
-                        <a href="{% block viber_link %}{% endblock %}" style="margin-right: 15px;">
+                        <a class="social-link" href="{% block viber_link %}{% endblock %}">
                             <img src="/media/logos/Viber.png" alt="Viber" width=40px>
                         </a>
                     </li>

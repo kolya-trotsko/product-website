@@ -3,86 +3,14 @@
     padding: 0px;
 }
 
-/* Оголошення основних стилів для .popup */
-.popup {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 999;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.hero {
+    background-image: url('/media/home/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 64px 16px;
 }
 
-.popup-content {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    max-width: 400px;
-    margin: 20px auto;
-}
-
-.close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
-    cursor: pointer;
-    color: rgb(243, 243, 243);
-    background-color: transparent;
-    border: none;
-}
-
-/* Стилі для #order-form */
-#order-form {
-    text-align: left;
-}
-
-#order-form label {
-    margin-bottom: 10px;
-    display: block;
-}
-
-.input-field {
-    width: 95%;
-    margin: 10px 0;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.radio-label {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.submit-button {
-    background-color: #0d7fe1;
-    color: #fff;
-    padding: 15px 30px;
-    font-size: 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    width: 100%;
-    margin-top: 30px;
-}
-
-.submit-button:hover {
-    background-color: #0d2de1;
-}
-
-#order-form input::placeholder {
-    color: #555;
-}
 
 /* Стилі для .service-offerings */
 .service-offerings {
@@ -114,28 +42,12 @@
     background: #f6f6f6;
 }
 
-/* Стилі для .cta-button */
-.cta-button {
-    background-color: #0d7fe1;
-    color: #fff;
-    padding: 15px 30px;
-    font-size: 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    display: block;
-    margin: 50px auto;
-}
-
-.cta-button:hover {
-    background-color: #0d2de1;
-}
 
 /* Стилі для .cleaning-list */
 .cleaning-list {
     display: flex;
     justify-content: space-around;
+    flex-wrap: wrap;
 }
 
 .cleaning-item {
@@ -144,12 +56,14 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
+    gap: 8px;
     border-radius: 5px;
     padding: 15px;
     margin: 10px;
     box-sizing: border-box;
     color: #fff;
     transition: background-color 0.3s;
+    min-width: 220px;
 }
 
 .item-1 {
@@ -185,13 +99,30 @@
     background-color: #0d2de1;
 }
 
+.steps-gallery {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: stretch;
+}
+
+.why-us-section {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: stretch;
+}
+
 
 
 
 .cleaning-steps-list {
     list-style: none;
     padding: 0;
-    width: 40%;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    text-align: left;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -201,39 +132,84 @@
     margin: 0;
     font-size: 18px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    gap: 12px;
     padding: 20px;
     transition: background-color 0.3s;
     cursor: pointer;
+    line-height: 1.4;
+    text-align: left;
 }
 
 .cleaning-step-bullet {
     font-weight: bold;
     color: #007BFF;
-    margin-right: 15px;
+    margin-right: 0;
+    min-width: 24px;
+    text-align: right;
+    flex-shrink: 0;
+    line-height: 1.2;
 }
 
 .cleaning-step:hover {
     background-color: #e0e0e0;
 }
 
+.cleaning-step.active {
+    background-color: #e0e0e0;
+}
+
 .carousel {
-    display: flex;
+    position: absolute;
+    inset: 0;
 }
 
 .carousel img {
-    object-fit: cover;
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
+    object-fit: contain;
+    display: block;
+    opacity: 0;
     transition: opacity 0.3s ease;
+}
+
+.carousel img:first-child {
+    opacity: 1;
+}
+
+.carousel img.is-active {
+    opacity: 1;
+}
+
+.carousel img[style*="display: block"],
+.carousel img[style*="display:block"] {
+    opacity: 1;
+}
+
+.carousel.is-ready img {
+    opacity: 0;
+}
+
+.carousel.is-ready img.is-active {
+    opacity: 1;
 }
 
 .photo-container {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     border-radius: 10px;
-    margin: 16px;
-    width: 60%;
+    margin: 0;
+    width: 100%;
+    position: relative;
+    aspect-ratio: 4 / 3;
+    min-height: 240px;
+    background-color: #fff;
+}
+
+.partners-section {
+    background-color: #0d7fe1;
 }
 
 
@@ -242,22 +218,22 @@
     width: 100%;
     list-style: none;
     padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+    gap: 12px;
+    justify-items: center;
 }
 
 .partner {
-    margin-left: 20px;
-    margin-right: 20px;
+    margin: 0;
     text-align: center;
     border: 1px solid #ddd;
     padding: 10px;
     background-color: #f9f9f9;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     transition: transform 0.2s;
-    width: 70px;
-    height: 70px;
+    width: 72px;
+    height: 72px;
 }
 
 .partner:hover {
@@ -265,23 +241,23 @@
 }
 
 .partner-logo {
-    width: 70px;
-    min-height: 50px;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
     display: block;
     margin: 0 auto 10px;
 }
 
 /* Адаптивний дизайн для .partner-list */
-@media (max-width: 70px) {
+@media (max-width: 700px) {
     .partner-list {
-        flex-direction: column;
-        align-items: center;
-        position: relative;
+        grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
     }
 }
 
 .why-us {
-    width: 50%;
+    width: 100%;
+    height: 100%;
     text-align: left;
     display: flex;
     flex-direction: column;
@@ -298,25 +274,58 @@
 }
 
 .customer-reviews {
-    width: 50%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .slider-container {
-    display: flex;
     overflow: hidden;
     width: 100%;
-    height: 90%;
+    position: relative;
+    aspect-ratio: 4 / 3;
+    max-width: 520px;
+    min-height: 240px;
+    margin: 0 auto;
+    border-radius: 8px;
+    background-color: #fff;
+    flex: 1;
 }
 
 .customer-review {
-    flex: 0 0 100%;
-    text-align: center;
-    display: none;
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.slider-container .customer-review:first-child {
+    opacity: 1;
+}
+
+.slider-container .customer-review.is-active {
+    opacity: 1;
+}
+
+.slider-container .customer-review[style*="display: block"],
+.slider-container .customer-review[style*="display:block"] {
+    opacity: 1;
+}
+
+.slider-container.is-ready .customer-review {
+    opacity: 0;
+}
+
+.slider-container.is-ready .customer-review.is-active {
+    opacity: 1;
 }
 
 .customer-review img {
-    width: auto;
-    height: 355px;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
     border-radius: 8px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
@@ -324,6 +333,10 @@
 .slider-controls {
     margin-top: 10px;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .button-nav {
@@ -346,16 +359,19 @@
     font-size: 22px;
     font-weight: bold;
     cursor: pointer;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto;
     align-items: center;
+    gap: 12px;
     padding: 10px 0;
     margin: 0;
+    text-align: left;
 }
 
 .faq-item h3::after {
     content: '+';
     transition: transform 0.3s;
+    align-self: start;
 }
 
 .faq-item.active h3::after {
@@ -374,4 +390,71 @@
 
 .faq-item.active p {
     display: block;
+}
+
+@media (min-width: 901px) {
+    .photo-container,
+    .slider-container {
+        aspect-ratio: auto;
+        height: 100%;
+        min-height: 0;
+    }
+}
+
+@media (max-width: 900px) {
+    .steps-gallery,
+    .why-us-section {
+        grid-template-columns: 1fr;
+    }
+
+    .cleaning-steps-list,
+    .photo-container {
+        width: 100%;
+    }
+
+    .photo-container {
+        margin: 0;
+    }
+
+    .why-us,
+    .customer-reviews {
+        width: 100%;
+    }
+
+    .slider-container {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .hero {
+        padding: 40px 16px;
+    }
+
+
+
+    .cleaning-list {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .cleaning-item {
+        margin: 8px 0;
+        text-align: left;
+    }
+
+    .cleaning-step {
+        font-size: 16px;
+        padding: 14px;
+    }
+
+    .why-us p {
+        margin-left: 0;
+        font-size: 16px;
+    }
+
+    .faq-item h3 {
+        font-size: 18px;
+        align-items: flex-start;
+    }
 }

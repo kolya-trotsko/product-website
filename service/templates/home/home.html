@@ -14,7 +14,7 @@
     <script src="{% static 'js/home.js' %}"></script>
 </head>
 
-<div style="background-image: url('/media/home/background.jpg'); background-size: cover; padding-bottom: 10%; padding-top: 10%; width: 100%;">
+<div class="hero">
     <h1 class="page-title">Комплексне чищення кондиціонерів в Харкові</h1>
 
     <div class="service-offerings">
@@ -33,13 +33,13 @@
     </div>
 
     <button class="cta-button" id="show-popup-button">Замовити послугу</button>
-    <div id="popup-container" class="popup" style="display: none;">
+    <div id="popup-container" class="popup">
         <div class="popup-content">
             <form method="post" action="{% url 'home' %}" id="order-form">
                 {% csrf_token %}
                 <input type="text" name="name" id="name" placeholder="Ваше ім'я" class="input-field" required>
                 <input type="text" name="phone" id="phone" placeholder="Ваш номер телефону" class="input-field" required>
-                <fieldset style="border: none; margin-top: 30px;">
+                <fieldset class="form-fieldset">
                     <label class="radio-label">
                         <input type="radio" name="option" value="Квартира" required>
                         <span>Квартира</span>
@@ -93,7 +93,7 @@
 
 <p class="title">Що входить в етапи очищення:</p>
 
-<div class="basic-container" style="display: flex; max-height: 540px;">
+<div class="basic-container steps-gallery">
     <ul class="cleaning-steps-list">
         <li class="cleaning-step">
             <span class="cleaning-step-bullet">1. </span> Розбирання внутрішнього блоку
@@ -122,7 +122,7 @@
     </ul>
     <div class="photo-container">
         <div class="carousel">
-            <img src="/media/home/7beca200ef016ac3be3ffc80cfc153fa.png">
+            <img src="/media/home/7beca200ef016ac3be3ffc80cfc153fa.png" class="is-active">
             <img src="/media/home/4istka_s_razborom.jpg">
             <img src="/media/home/Master_promyl_soderz.jpg">
             <img src="/media/home/0_orig.jpg">
@@ -136,7 +136,7 @@
 
 <p class="title">Наші партнери:</p>
 
-<div class="basic-container" style="background-color: #0d7fe1;">
+<div class="basic-container partners-section">
     <ul class="partner-list">
         {% for company in companies %}
                 {% if company.logo %}
@@ -151,7 +151,7 @@
 
 <p class="title">Чому ми?</p>
 
-<div class="basic-container" style="display: flex;">
+<div class="basic-container why-us-section">
     <div class="why-us">
         <p>Робимо свою роботу швидко і якісно. 45 хвилин і все готово!</p>
         <p>Ми професіонали своєї справи. 10 роки досвіду роботи в цій сфері</p>
@@ -163,7 +163,7 @@
 
     <div class="customer-reviews">
         <div id="slider-container" class="slider-container">
-            <div class="customer-review" id="review1">
+            <div class="customer-review is-active" id="review1">
                 <img src="/media/home/photo_1.png" alt="Відгук 1">
             </div>
             <div class="customer-review" id="review2">
