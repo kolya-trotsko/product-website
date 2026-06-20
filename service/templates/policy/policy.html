@@ -8,10 +8,11 @@
 {% block telegram_link %} {{ contacts.telegram_link }} {% endblock %}
 {% block viber_link %} {{ contacts.viber_link }} {% endblock %}
 
-{% block content %}
-<head>
+{% block extra_head %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/policy/policy.css' %}">
-</head>
+{% endblock %}
+
+{% block content %}
 
     <div class="container">
         <h1>Політика конфіденційності</h1>

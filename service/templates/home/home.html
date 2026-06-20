@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 
 {% block address %} {{ contacts.address }} {% endblock %}
@@ -8,11 +8,12 @@
 {% block telegram_link %} {{ contacts.telegram_link }} {% endblock %}
 {% block viber_link %} {{ contacts.viber_link }} {% endblock %}
 
-{% block content %}
-<head>
+{% block extra_head %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/home/home.css' %}">
     <script src="{% static 'js/home.js' %}"></script>
-</head>
+{% endblock %}
+
+{% block content %}
 
 <div class="hero">
     <h1 class="page-title">Комплексне чищення кондиціонерів в Харкові</h1>
@@ -37,22 +38,26 @@
         <div class="popup-content">
             <form method="post" action="{% url 'home' %}" id="order-form">
                 {% csrf_token %}
-                <input type="text" name="name" id="name" placeholder="Ваше ім'я" class="input-field" required>
-                <input type="text" name="phone" id="phone" placeholder="Ваш номер телефону" class="input-field" required>
+                {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+                <input type="text" name="name" id="name" placeholder="Ваше ім'я" class="input-field" value="{{ form.name.value|default:'' }}" required>
+                {% if form.name.errors %}<div class="form-errors">{{ form.name.errors }}</div>{% endif %}
+                <input type="text" name="phone" id="phone" placeholder="Ваш номер телефону" class="input-field" value="{{ form.phone.value|default:'' }}" required>
+                {% if form.phone.errors %}<div class="form-errors">{{ form.phone.errors }}</div>{% endif %}
                 <fieldset class="form-fieldset">
                     <label class="radio-label">
-                        <input type="radio" name="option" value="Квартира" required>
+                        <input type="radio" name="option" value="Квартира" {% if form.option.value == 'Квартира' %}checked{% endif %} required>
                         <span>Квартира</span>
                     </label>
                     <label class="radio-label">
-                        <input type="radio" name="option" value="Офіс" required>
+                        <input type="radio" name="option" value="Офіс" {% if form.option.value == 'Офіс' %}checked{% endif %} required>
                         <span>Офіс</span>
                     </label>
                     <label class="radio-label">
-                        <input type="radio" name="option" value="Інше приміщення" required>
+                        <input type="radio" name="option" value="Інше приміщення" {% if form.option.value == 'Інше приміщення' %}checked{% endif %} required>
                         <span>Інше приміщення</span>
                     </label>
                 </fieldset>
+                {% if form.option.errors %}<div class="form-errors">{{ form.option.errors }}</div>{% endif %}
                 <button type="submit" class="submit-button">Відправити</button>
             </form>
             <button class="close-button" id="close-popup-button">Закрити</button>
@@ -64,27 +69,27 @@
 
 <div class="cleaning-list">
     <div class="cleaning-item item-1">
-        <img src="/media/home/photo_6.png" alt="Конденсація" width="60px" loading="lazy" decoding="async">
+        <img src="{{ MEDIA_URL }}home/photo_6.png" alt="Конденсація" width="60px" loading="lazy" decoding="async">
         <p>У вас почала текти вода з кондиціонера</p>
     </div>
 
     <div class="cleaning-item item-2">
-        <img src="/media/home/photo_1.png" alt="Немає гріючого / охолоджуючого повітря" width="60px" loading="lazy" decoding="async">
+        <img src="{{ MEDIA_URL }}home/photo_1.png" alt="Немає гріючого / охолоджуючого повітря" width="60px" loading="lazy" decoding="async">
         <p>Прилад не гріє і не охолоджує, як раніше</p>
     </div>
 
     <div class="cleaning-item item-3">
-        <img src="/media/home/photo_2.png" alt="Неприємний запах" width="60px" loading="lazy" decoding="async">
+        <img src="{{ MEDIA_URL }}home/photo_2.png" alt="Неприємний запах" width="60px" loading="lazy" decoding="async">
         <p>Під час роботи в приміщенні з'являється неприємний запах</p>
     </div>
 
     <div class="cleaning-item item-5">
-        <img src="/media/home/photo_4.png" alt="Немає чищення протягом року" width="60px" loading="lazy" decoding="async">
+        <img src="{{ MEDIA_URL }}home/photo_4.png" alt="Немає чищення протягом року" width="60px" loading="lazy" decoding="async">
         <p>Ви не проводили комплексне чищення понад рік</p>
     </div>
 
     <div class="cleaning-item item-6">
-        <img src="/media/home/photo_5.png" alt="Килим та домашні тварини" width="60px" loading="lazy" decoding="async">
+        <img src="{{ MEDIA_URL }}home/photo_5.png" alt="Килим та домашні тварини" width="60px" loading="lazy" decoding="async">
         <p>У вас килимове покриття і домашні тварини</p>
     </div>
 </div>
@@ -122,14 +127,14 @@
     </ul>
     <div class="photo-container">
         <div class="carousel">
-            <img src="/media/home/7beca200ef016ac3be3ffc80cfc153fa.png" class="is-active" loading="lazy" decoding="async">
-            <img src="/media/home/4istka_s_razborom.jpg" loading="lazy" decoding="async">
-            <img src="/media/home/Master_promyl_soderz.jpg" loading="lazy" decoding="async">
-            <img src="/media/home/0_orig.jpg" loading="lazy" decoding="async">
-            <img src="/media/home/filtr.jpg" loading="lazy" decoding="async">
-            <img src="/media/home/167578_1683100683_0.jpg" loading="lazy" decoding="async">
-            <img src="/media/home/uefifgga9t0_5d0a2e0c6310b.jpg" loading="lazy" decoding="async">
-            <img src="/media/home/moyka-vneshnego-bloka.jpg" loading="lazy" decoding="async">
+            <img src="{{ MEDIA_URL }}home/7beca200ef016ac3be3ffc80cfc153fa.png" class="is-active" loading="lazy" decoding="async">
+            <img src="{{ MEDIA_URL }}home/4istka_s_razborom.jpg" loading="lazy" decoding="async">
+            <img src="{{ MEDIA_URL }}home/Master_promyl_soderz.jpg" loading="lazy" decoding="async">
+            <img src="{{ MEDIA_URL }}home/0_orig.jpg" loading="lazy" decoding="async">
+            <img src="{{ MEDIA_URL }}home/filtr.jpg" loading="lazy" decoding="async">
+            <img src="{{ MEDIA_URL }}home/167578_1683100683_0.jpg" loading="lazy" decoding="async">
+            <img src="{{ MEDIA_URL }}home/uefifgga9t0_5d0a2e0c6310b.jpg" loading="lazy" decoding="async">
+            <img src="{{ MEDIA_URL }}home/moyka-vneshnego-bloka.jpg" loading="lazy" decoding="async">
         </div>
     </div>
 </div>
@@ -164,10 +169,10 @@
     <div class="customer-reviews">
         <div id="slider-container" class="slider-container">
             <div class="customer-review is-active" id="review1">
-                <img src="/media/home/photo_1.png" alt="Відгук 1" loading="lazy" decoding="async">
+                <img src="{{ MEDIA_URL }}home/photo_1.png" alt="Відгук 1" loading="lazy" decoding="async">
             </div>
             <div class="customer-review" id="review2">
-                <img src="/media/home/photo_2.png" alt="Відгук 2" loading="lazy" decoding="async">
+                <img src="{{ MEDIA_URL }}home/photo_2.png" alt="Відгук 2" loading="lazy" decoding="async">
             </div>
         </div>
         <div class="slider-controls">
@@ -202,3 +207,5 @@
     </div>
 </div>
 {% endblock %}
+
+

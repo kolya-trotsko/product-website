@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 
 {% block address %} {{ contacts.address }} {% endblock %}
@@ -8,26 +8,27 @@
 {% block telegram_link %} {{ contacts.telegram_link }} {% endblock %}
 {% block viber_link %} {{ contacts.viber_link }} {% endblock %}
 
-{% block content %}
-<head>
+{% block extra_head %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/catalog.css' %}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{% static 'js/catalog.js' %}"></script>
-</head>
+{% endblock %}
+
+{% block content %}
 
 <main>
-    <form method="get" action="{{ conditioner.id }}">
-        <input type="text" name="query" value="{{ search_query }}" placeholder="Пошук...">
-        <button type="submit">Шукати</button> 
+    <form method="get" action="{% url 'catalog' %}">
+        <input type="text" name="query" value="{{ search_query }}" placeholder="РџРѕС€СѓРє...">
+        <button type="submit">РЁСѓРєР°С‚Рё</button> 
         <br>
         <select name="color" class="color-filter">
-            <option value="">Колір</option>
+            <option value="">РљРѕР»С–СЂ</option>
             {% for color in colors %}
                 <option value="{{ color }}">{{ color }}</option>
             {% endfor %}
         </select>
         <select name="company" class="company-filter">
-            <option value="">Виробник</option>
+            <option value="">Р’РёСЂРѕР±РЅРёРє</option>
             {% for company in companies %}
                 <option value="{{ company }}">{{ company }}</option>
             {% endfor %}
@@ -39,9 +40,9 @@
             <div class="conditioner-item" data-href="{{ conditioner.id }}">
                 <img src="{{ conditioner.photo.url }}" alt="{{ conditioner.name }}" class="conditioner-image" loading="lazy" decoding="async">
                 <h2>{{ conditioner.name }}</h2>
-                <p>Ціна: {{ conditioner.price }} гривень</p>
-                <p>Виробник: {{ conditioner.company.name }}</p>
-                <p class="colors">Доступні кольори:</p>
+                <p>Р¦С–РЅР°: {{ conditioner.price }} РіСЂРёРІРµРЅСЊ</p>
+                <p>Р’РёСЂРѕР±РЅРёРє: {{ conditioner.company.name }}</p>
+                <p class="colors">Р”РѕСЃС‚СѓРїРЅС– РєРѕР»СЊРѕСЂРё:</p>
                 <ul class="color-list">
                     {% for color in conditioner.colors.all %}
                         <li class="color-box" style="background-color: {{ color.hash }};"></li>
@@ -49,24 +50,24 @@
                 </ul>
             </div>
         {% empty %}
-            <p>Не знайдено результату</p>
+            <p>РќРµ Р·РЅР°Р№РґРµРЅРѕ СЂРµР·СѓР»СЊС‚Р°С‚Сѓ</p>
         {% endfor %}
     </div>    
 
     <div class="pagination">
         <span class="step-links">
             {% if conditioners.has_previous %}
-                <a href="?page=1&query={{ search_query }}&color={{ request.GET.color }}&company={{ request.GET.company }}">Перша</a>
-                <a href="?page={{ conditioners.previous_page_number }}&query={{ search_query }}&color={{ request.GET.color }}&company={{ request.GET.company }}">Попередня</a>
+                <a href="?page=1&query={{ search_query }}&color={{ request.GET.color }}&company={{ request.GET.company }}">РџРµСЂС€Р°</a>
+                <a href="?page={{ conditioners.previous_page_number }}&query={{ search_query }}&color={{ request.GET.color }}&company={{ request.GET.company }}">РџРѕРїРµСЂРµРґРЅСЏ</a>
             {% endif %}
             
             <span class="current-page">
-                Сторінка {{ conditioners.number }} з {{ conditioners.paginator.num_pages }}.
+                РЎС‚РѕСЂС–РЅРєР° {{ conditioners.number }} Р· {{ conditioners.paginator.num_pages }}.
             </span>
             
             {% if conditioners.has_next %}
-                <a href="?page={{ conditioners.next_page_number }}&query={{ search_query }}&color={{ request.GET.color }}&company={{ request.GET.company }}">Наступна</a>
-                <a href="?page={{ conditioners.paginator.num_pages }}&query={{ search_query }}&color={{ request.GET.color }}&company={{ request.GET.company }}">Остання</a>
+                <a href="?page={{ conditioners.next_page_number }}&query={{ search_query }}&color={{ request.GET.color }}&company={{ request.GET.company }}">РќР°СЃС‚СѓРїРЅР°</a>
+                <a href="?page={{ conditioners.paginator.num_pages }}&query={{ search_query }}&color={{ request.GET.color }}&company={{ request.GET.company }}">РћСЃС‚Р°РЅРЅСЏ</a>
             {% endif %}
         </span>
     </div>
@@ -74,3 +75,4 @@
 </main>
 
 {% endblock %}
+

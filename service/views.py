@@ -12,6 +12,7 @@ def service(request):
     contacts = CompanyInfo.objects.first()
     services = AirConditioningService.objects.all()
     service_choices = [(s.service_name, s.service_name) for s in services]
+    form = ServiceOrderForm(service_choices=service_choices)
 
     if request.method == 'POST':
         if is_rate_limited(request, "service_order"):
@@ -30,12 +31,14 @@ def service(request):
                             'title': 'service', 
                             'contacts': contacts, 
                             'services': services,
+                            'form': form,
                             })
 
 
 def home(request):
     contacts = CompanyInfo.objects.first()
     companies = Company.objects.all()
+    form = OrderForm()
 
     if request.method == 'POST':
         if is_rate_limited(request, "home_order"):
@@ -52,7 +55,8 @@ def home(request):
     return render(request, 'home/home.html', {
                         'title': 'Home', 
                         'contacts': contacts, 
-                        'companies': companies
+                        'companies': companies,
+                        'form': form,
                         })
 
 

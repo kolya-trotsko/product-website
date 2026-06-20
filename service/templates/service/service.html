@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 
 {% block address %}
@@ -25,11 +25,12 @@
     {{ contacts.viber_link }}
 {% endblock %}
 
-{% block content %}
-<head>
+{% block extra_head %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/service/service.css' %}">
     <script src="{% static 'js/service.js' %}"></script>
-</head>
+{% endblock %}
+
+{% block content %}
 
 <h2>Причини звернутися до нас</h2>
 
@@ -53,7 +54,7 @@
     </div>
 
     <div class="image-section">
-        <img src="/media/service/PhotoRoom-20231113_215321.png" alt="Фото сервісу" class="floating-image">
+        <img src="{{ MEDIA_URL }}service/PhotoRoom-20231113_215321.png" alt="Фото сервісу" class="floating-image">
     </div>
 </div>
 
@@ -81,11 +82,16 @@
     <div class="popup-content">
         <form method="post" action="{% url 'service' %}" id="order-form">
             {% csrf_token %}
-            <input type="text" name="name" id="name" placeholder="Ваше ім'я" class="input-field" required>
-            <input type="text" name="phone" id="phone" placeholder="Ваш номер телефону" class="input-field" required>
-            <input type="text" name="address" id="address" placeholder="Ваша адреса" class="input-field" required>
+            {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+            <input type="text" name="name" id="name" placeholder="Ваше ім'я" class="input-field" value="{{ form.name.value|default:'' }}" required>
+            {% if form.name.errors %}<div class="form-errors">{{ form.name.errors }}</div>{% endif %}
+            <input type="text" name="phone" id="phone" placeholder="Ваш номер телефону" class="input-field" value="{{ form.phone.value|default:'' }}" required>
+            {% if form.phone.errors %}<div class="form-errors">{{ form.phone.errors }}</div>{% endif %}
+            <input type="text" name="address" id="address" placeholder="Ваша адреса" class="input-field" value="{{ form.address.value|default:'' }}" required>
+            {% if form.address.errors %}<div class="form-errors">{{ form.address.errors }}</div>{% endif %}
 
             <fieldset class="form-fieldset">
+                {% if form.services.errors %}<div class="form-errors">{{ form.services.errors }}</div>{% endif %}
                 {% if services %}
                     {% for service in services %}
                         <label class="radio-label">

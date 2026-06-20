@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 
 {% block address %}
@@ -25,11 +25,12 @@
     {{ contacts.viber_link }}
 {% endblock %}
 
-{% block content %}
-<head>
+{% block extra_head %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/conditioner_detail.css' %}">
     <script src="{% static 'js/conditioner_detail.js' %}"></script>
-</head>
+{% endblock %}
+
+{% block content %}
 
 <div class="container">
     <div class="product-info">
@@ -38,7 +39,7 @@
             <h2>{{ conditioner.name }}</h2>
             <p class="price">Ціна: {{ conditioner.price|floatformat:"2" }} грн</p>
             <p class="manufacturer">Виробник: {{ conditioner.company.name }}</p>
-            <p class="description">Опис: {{ conditioner.description|safe }}</p>
+            <p class="description">Опис: {{ conditioner.description }}</p>
             <p class="colors">Доступні кольори:</p>
             <ul class="color-list">
                 {% for color in conditioner.colors.all %}
@@ -54,21 +55,26 @@
         <div class="popup-content">
             <form method="post" action="{% url 'conditioner_detail' conditioner.id %}" id="order-form">
                 {% csrf_token %}
+                {% if order_form.non_field_errors %}<div class="form-errors">{{ order_form.non_field_errors }}</div>{% endif %}
                 <label for="name">Ім'я</label>
-                <input type="text" name="name" id="name" class="input-field" required>
+                <input type="text" name="name" id="name" class="input-field" value="{{ order_form.name.value|default:'' }}" required>
+                {% if order_form.name.errors %}<div class="form-errors">{{ order_form.name.errors }}</div>{% endif %}
 
                 <label for="phone">Номер телефону</label>
-                <input type="text" name="phone" id="phone" class="input-field" required>
+                <input type="text" name="phone" id="phone" class="input-field" value="{{ order_form.phone.value|default:'' }}" required>
+                {% if order_form.phone.errors %}<div class="form-errors">{{ order_form.phone.errors }}</div>{% endif %}
 
                 <label for="address">Адреса</label>
-                <input type="text" name="address" id="address" class="input-field" required>
+                <input type="text" name="address" id="address" class="input-field" value="{{ order_form.address.value|default:'' }}" required>
+                {% if order_form.address.errors %}<div class="form-errors">{{ order_form.address.errors }}</div>{% endif %}
 
                 <label for="color">Колір</label>
                 <select name="color" id="color" class="input-field" required>
                     {% for color in conditioner.colors.all %}
-                        <option value="{{ color.id }}">{{ color.name }}</option>
+                        <option value="{{ color.id }}" {% if order_form.color.value|stringformat:"s" == color.id|stringformat:"s" %}selected{% endif %}>{{ color.name }}</option>
                     {% endfor %}
                 </select>
+                {% if order_form.color.errors %}<div class="form-errors">{{ order_form.color.errors }}</div>{% endif %}
 
                 <button type="submit" class="submit-button">Відправити</button>
             </form>

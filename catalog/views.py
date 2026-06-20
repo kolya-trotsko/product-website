@@ -44,13 +44,14 @@ def conditioner_detail(request, conditioner_id):
     conditioner = get_object_or_404(AirConditioner, id=conditioner_id)
     contacts = CompanyInfo.objects.first()
     reviews = Review.objects.filter(conditioner_id=conditioner_id)
+    order_form = ConditionerOrderForm(conditioner=conditioner)
 
     if request.method == 'POST':
         if is_rate_limited(request, "conditioner_order"):
             return HttpResponse(status=429)
-        form = ConditionerOrderForm(request.POST, conditioner=conditioner)
-        if form.is_valid():
-            order = form.save(commit=False)
+        order_form = ConditionerOrderForm(request.POST, conditioner=conditioner)
+        if order_form.is_valid():
+            order = order_form.save(commit=False)
             order.conditioner = conditioner
             order.save()
             return redirect('conditioner_detail', conditioner_id=conditioner_id)
@@ -59,6 +60,7 @@ def conditioner_detail(request, conditioner_id):
         'conditioner': conditioner,
         'contacts': contacts,
         'reviews': reviews,
+        'order_form': order_form,
     })
 
 
@@ -79,5 +81,10 @@ def add_review(request, conditioner_id):
             review.user = request.user
             review.save()
             messages.success(request, 'Відгук додано.')
+        else:
+            for field, errors in form.errors.items():
+                field_label = form.fields.get(field).label if field in form.fields else field
+                for error in errors:
+                    messages.error(request, f"{field_label}: {error}")
 
     return redirect('conditioner_detail', conditioner_id=conditioner_id)

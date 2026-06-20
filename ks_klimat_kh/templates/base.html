@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 {% load static %}
 <html lang="en">
 <head>
@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}KS KLIMAT KH{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
-    <link rel="icon" type="image/png" href="/media/logos/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/header.css' %}">
+    <link rel="icon" type="image/png" href="{{ MEDIA_URL }}logos/favicon.ico">
+    {% block extra_head %}{% endblock %}
 </head>
 
 <body>
@@ -15,6 +17,13 @@
     {% endblock %}
     
     <main class="main-content">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="message {{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         {% block content %}
         {% endblock %}
     </main>
@@ -22,11 +31,11 @@
     {% block footer %}
         <footer class="site-footer">
             <div class="footer-left">
-                <h4>Зв'язатися з нами</h4>
+                <h4>Р—РІ'СЏР·Р°С‚РёСЃСЏ Р· РЅР°РјРё</h4>
                 <ul>
-                    <li>Адреса: {% block address %}Default Address{% endblock %}</li>
+                    <li>РђРґСЂРµСЃР°: {% block address %}Default Address{% endblock %}</li>
                     <li>email: {% block email %}Default email{% endblock %}</li>
-                    <li>Телефон: {% block phone %}Default Phone{% endblock %}</li>
+                    <li>РўРµР»РµС„РѕРЅ: {% block phone %}Default Phone{% endblock %}</li>
                 </ul>
             </div>
 
@@ -34,13 +43,13 @@
                 <ul class="social-list">
                     <li class="social-items">
                         <a class="social-link" href="{% block instagram_link %}{% endblock %}">
-                            <img src="/media/logos/Instagram.png" alt="Instagram" width=40px>
+                            <img src="{{ MEDIA_URL }}logos/Instagram.png" alt="Instagram" width=40px>
                         </a>
                         <a class="social-link" href="{% block telegram_link %}{% endblock %}">
-                            <img src="/media/logos/Telegram.png" alt="Telegram" width=40px>
+                            <img src="{{ MEDIA_URL }}logos/Telegram.png" alt="Telegram" width=40px>
                         </a>
                         <a class="social-link" href="{% block viber_link %}{% endblock %}">
-                            <img src="/media/logos/Viber.png" alt="Viber" width=40px>
+                            <img src="{{ MEDIA_URL }}logos/Viber.png" alt="Viber" width=40px>
                         </a>
                     </li>
                 </ul>
@@ -49,3 +58,4 @@
     {% endblock %}  
 </body>
 </html>
+
