@@ -45,9 +45,9 @@ class Review(models.Model):
 
 
 class ConditionerOrder(models.Model):
-    name = models.CharField(max_length=100, verbose_name="??'?")
-    phone = models.CharField(max_length=100, verbose_name="???????")
-    address = models.CharField(max_length=100, verbose_name="??????")
+    name = models.CharField(max_length=100, verbose_name="Ім'я")
+    phone = models.CharField(max_length=100, verbose_name="Телефон")
+    address = models.CharField(max_length=100, verbose_name="Адреса")
     conditioner = models.ForeignKey(AirConditioner, on_delete=models.CASCADE)
     color = models.ForeignKey(Color, on_delete=models.CASCADE)
 

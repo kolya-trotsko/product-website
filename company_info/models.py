@@ -11,8 +11,8 @@ class CompanyInfo(models.Model):
 
     def save(self, *args, **kwargs):
         if CompanyInfo.objects.exists() and not self.pk:
-            raise Exception("????? ???? ???? ???? ????? CompanyInfo")
+            raise Exception("Може існувати лише один запис CompanyInfo")
         super(CompanyInfo, self).save(*args, **kwargs)
 
     def __str__(self):
-        return "????????? ??????????"
+        return "Інформація про компанію"

@@ -23,10 +23,10 @@ class AirConditionerAdmin(admin.ModelAdmin):
     list_select_related = ("company",)
     filter_horizontal = ("colors",)
 
-    @admin.display(description="????")
+    @admin.display(description="Фото")
     def photo_preview(self, obj):
         if not obj.photo:
-            return "?"
+            return "Немає"
         return format_html('<img src="{}" alt="{}" style="height:50px;"/>', obj.photo.url, obj.name)
 
 
