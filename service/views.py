@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.contrib import messages
 from company_info.models import CompanyInfo
 from .models import AirConditioningService
 from catalog.models import Company
@@ -29,6 +30,7 @@ def service(request):
                 client_ip=get_client_ip(request),
             )
             notify_service_order(order, request.path)
+            messages.success(request, "Дякуємо, заявку прийнято. Ми зв'яжемося з вами найближчим часом.")
             return redirect('service')
         
     return render(request, 'service/service.html', {
@@ -62,6 +64,7 @@ def home(request):
                 client_ip=get_client_ip(request),
             )
             notify_home_order(order, request.path)
+            messages.success(request, "Дякуємо, заявку прийнято. Ми зв'яжемося з вами найближчим часом.")
             return redirect('home')
     
     return render(request, 'home/home.html', {

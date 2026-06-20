@@ -15,7 +15,7 @@ File: service/views.py
 - service: lists services; creates ServiceOrder on POST
 - policy: renders policy page
 
-Note: service.view uses request.POST.getlist('services') and stores it in ServiceOrder.place (CharField). This will store a string representation of the list.
+Note: service.view validates order input through forms and stores selected services as a comma-separated value in ServiceOrder.place.
 
 ## URLs
 File: service/urls.py
@@ -31,4 +31,4 @@ File: service/urls.py
 - service/static/css/service/service.css
 - service/static/css/policy/policy.css
 - service/static/js/home.js
-- service/static/js/service.js
+- ks_klimat_kh/static/js/popup.js

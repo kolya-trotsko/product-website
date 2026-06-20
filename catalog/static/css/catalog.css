@@ -18,6 +18,11 @@ button[type="submit"]:hover {
     background-color: #0a6cc0;
 }
 
+button[type="submit"]:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
+
 select.color-filter,
 select.company-filter,
 select.type-filter,
@@ -52,6 +57,10 @@ select.stock-filter,
     align-items: center;
     gap: 10px;
     margin-bottom: 12px;
+}
+
+.compare-status {
+    color: #555;
 }
 
 .conditioner-grid {

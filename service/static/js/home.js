@@ -1,18 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const showPopupButton = document.getElementById("show-popup-button");
-    const popupContainer = document.getElementById("popup-container");
-    const closePopupButton = document.getElementById("close-popup-button");
-
-    if (showPopupButton && popupContainer && closePopupButton) {
-        showPopupButton.addEventListener("click", function () {
-            popupContainer.style.display = "flex";
-        });
-
-        closePopupButton.addEventListener("click", function () {
-            popupContainer.style.display = "none";
-        });
-    }
-
     const cleaningSteps = document.querySelectorAll('.cleaning-step');
     const carousel = document.querySelector('.carousel');
     const images = carousel ? carousel.querySelectorAll('img') : [];

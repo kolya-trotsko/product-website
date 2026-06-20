@@ -33,4 +33,4 @@ File: catalog/urls.py
 - catalog/static/css/catalog.css
 - catalog/static/css/conditioner_detail.css
 - catalog/static/js/catalog.js
-- catalog/static/js/conditioner_detail.js
+- ks_klimat_kh/static/js/popup.js

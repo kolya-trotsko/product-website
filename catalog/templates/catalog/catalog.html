@@ -10,7 +10,6 @@
 
 {% block extra_head %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/catalog.css' %}">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{% static 'js/catalog.js' %}"></script>
 {% endblock %}
 
@@ -57,15 +56,15 @@
 
     <form method="get" action="{% url 'compare_conditioners' %}" class="compare-form">
         <div class="compare-actions">
-            <button type="submit">Порівняти обрані</button>
-            <span>Оберіть до 4 моделей для порівняння</span>
+            <button type="submit" class="compare-submit" disabled>Порівняти обрані</button>
+            <span class="compare-status">Оберіть від 2 до 4 моделей для порівняння</span>
         </div>
 
         <div class="conditioner-grid">
             {% for conditioner in conditioners %}
-                <div class="conditioner-item" data-href="{{ conditioner.id }}">
+                <div class="conditioner-item" data-href="{% url 'conditioner_detail' conditioner.id %}">
                     <label class="compare-check">
-                        <input type="checkbox" name="ids" value="{{ conditioner.id }}">
+                        <input type="checkbox" class="compare-checkbox" name="ids" value="{{ conditioner.id }}">
                         Порівняти
                     </label>
 
