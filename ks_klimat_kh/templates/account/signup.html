@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+{% load socialaccount %}
+
+{% block content %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/auth.css' %}">
+</head>
+
+<div class="auth-page">
+    <div class="auth-card">
+        <h2>Реєстрація</h2>
+
+        <form method="post" action="{% url 'account_signup' %}">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <label for="{{ form.email.id_for_label }}">Email</label>
+            {{ form.email }}
+            {{ form.email.errors }}
+
+            {% if form.username %}
+                <label for="{{ form.username.id_for_label }}">Логін</label>
+                {{ form.username }}
+                {{ form.username.errors }}
+            {% endif %}
+
+            <label for="{{ form.password1.id_for_label }}">Пароль</label>
+            <div class="password-row">
+                {{ form.password1 }}
+                <label class="show-password">
+                    <input type="checkbox" id="toggle-password-signup">
+                    Показати пароль
+                </label>
+            </div>
+            {{ form.password1.errors }}
+
+            <label for="{{ form.password2.id_for_label }}">Повторіть пароль</label>
+            {{ form.password2 }}
+            {{ form.password2.errors }}
+
+            <input type="hidden" name="next" value="{{ next }}">
+            <button type="submit">Зареєструватися</button>
+        </form>
+
+        <div class="auth-divider">
+            <span>або</span>
+        </div>
+
+        <a class="google-button" href="{% provider_login_url 'google' %}">
+            Зареєструватися через Google
+        </a>
+
+        <p class="auth-alt">Вже маєте акаунт? <a href="{% url 'account_login' %}">Увійти</a></p>
+    </div>
+</div>
+
+<script>
+    const toggleSignup = document.getElementById('toggle-password-signup');
+    const passwordSignup = document.getElementById('{{ form.password1.id_for_label }}');
+    if (toggleSignup && passwordSignup) {
+        toggleSignup.addEventListener('change', () => {
+            passwordSignup.type = toggleSignup.checked ? 'text' : 'password';
+        });
+    }
+</script>
+{% endblock %}

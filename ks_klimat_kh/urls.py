@@ -8,6 +8,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', RedirectView.as_view(url='/service/home/')),
+    path('accounts/', include('allauth.urls')),
     path('catalog/', include('catalog.urls')),
     path('service/', include('service.urls')),
 ]

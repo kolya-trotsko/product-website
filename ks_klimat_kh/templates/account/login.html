@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+{% load socialaccount %}
+
+{% block content %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/auth.css' %}">
+</head>
+
+<div class="auth-page">
+    <div class="auth-card">
+        <h2>Вхід</h2>
+
+        <form method="post" action="{% url 'account_login' %}">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <label for="{{ form.login.id_for_label }}">Email</label>
+            {{ form.login }}
+            {{ form.login.errors }}
+
+            <label for="{{ form.password.id_for_label }}">Пароль</label>
+            <div class="password-row">
+                {{ form.password }}
+                <label class="show-password">
+                    <input type="checkbox" id="toggle-password-login">
+                    Показати пароль
+                </label>
+            </div>
+            {{ form.password.errors }}
+
+            <input type="hidden" name="next" value="{{ next }}">
+            <button type="submit">Увійти</button>
+        </form>
+
+        <div class="auth-divider">
+            <span>або</span>
+        </div>
+
+        <a class="google-button" href="{% provider_login_url 'google' %}">
+            Увійти через Google
+        </a>
+
+        <p class="auth-alt">Ще немає акаунта? <a href="{% url 'account_signup' %}">Зареєструватися</a></p>
+    </div>
+</div>
+
+<script>
+    const toggleLogin = document.getElementById('toggle-password-login');
+    const passwordLogin = document.getElementById('{{ form.password.id_for_label }}');
+    if (toggleLogin && passwordLogin) {
+        toggleLogin.addEventListener('change', () => {
+            passwordLogin.type = toggleLogin.checked ? 'text' : 'password';
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,164 @@
+@font-face {
+    font-family: "IBM Plex Sans";
+    src: url("https://fonts.gstatic.com/s/ibmplexsans/v19/zYX-KVElMYYaJe8bpLHnCwDKhdzeFaxOedc.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "IBM Plex Sans";
+    src: url("https://fonts.gstatic.com/s/ibmplexsans/v19/zYX-KVElMYYaJe8bpLHnCwDKhdzeFaxOedA.woff2") format("woff2");
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --auth-bg: #f4f1ec;
+    --auth-card: #ffffff;
+    --auth-text: #1b1b1b;
+    --auth-muted: #5c5c5c;
+    --auth-accent: #2e6f8f;
+    --auth-border: #d7d1c7;
+    --auth-shadow: rgba(0, 0, 0, 0.08);
+}
+
+.auth-page {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 20px;
+    background: linear-gradient(140deg, rgba(46, 111, 143, 0.08), rgba(206, 171, 103, 0.18));
+}
+
+.auth-card {
+    width: min(420px, 100%);
+    background: var(--auth-card);
+    border: 1px solid var(--auth-border);
+    border-radius: 18px;
+    padding: 32px;
+    box-shadow: 0 20px 40px var(--auth-shadow);
+    font-family: "IBM Plex Sans", sans-serif;
+    color: var(--auth-text);
+}
+
+.auth-card h2 {
+    margin: 0 0 18px;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.auth-card form {
+    display: grid;
+    gap: 14px;
+}
+
+.auth-card label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--auth-muted);
+}
+
+.auth-card input[type="text"],
+.auth-card input[type="email"],
+.auth-card input[type="password"] {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--auth-border);
+    font-size: 15px;
+    font-family: "IBM Plex Sans", sans-serif;
+    color: var(--auth-text);
+    background: #fff;
+}
+
+.auth-card input:focus {
+    outline: 2px solid rgba(46, 111, 143, 0.3);
+    border-color: var(--auth-accent);
+}
+
+.auth-card button {
+    margin-top: 6px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: none;
+    background: var(--auth-accent);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.auth-card button:hover {
+    filter: brightness(0.95);
+}
+
+.auth-card .errorlist {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: #b3261e;
+    font-size: 13px;
+}
+
+.password-row {
+    display: grid;
+    gap: 8px;
+}
+
+.show-password {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--auth-muted);
+}
+
+.auth-divider {
+    margin: 18px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--auth-muted);
+    font-size: 13px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--auth-border);
+}
+
+.google-button {
+    display: block;
+    text-align: center;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--auth-border);
+    color: var(--auth-text);
+    text-decoration: none;
+    font-weight: 600;
+    background: #fff;
+}
+
+.auth-alt {
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--auth-muted);
+}
+
+.auth-alt a {
+    color: var(--auth-accent);
+    text-decoration: none;
+}
+
+@media (max-width: 600px) {
+    .auth-card {
+        padding: 24px;
+        border-radius: 14px;
+    }
+}

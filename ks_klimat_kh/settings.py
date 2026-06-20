@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import json
 import os
 from pathlib import Path
 
@@ -41,6 +42,28 @@ ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", [
     "192.168.1.14",
 ])
 
+
+def load_google_oauth_app(base_dir):
+    client_id = os.getenv("GOOGLE_OAUTH2_CLIENT_ID", "")
+    secret = os.getenv("GOOGLE_OAUTH2_CLIENT_SECRET", "")
+    if client_id and secret:
+        return client_id, secret
+    secret_file = os.getenv("GOOGLE_OAUTH2_CLIENT_SECRET_FILE", "")
+    if not secret_file:
+        default_path = base_dir / "secrets" / "google_oauth_client.json"
+        if default_path.exists():
+            secret_file = str(default_path)
+    if secret_file:
+        try:
+            with open(secret_file, "r", encoding="utf-8") as handle:
+                data = json.load(handle)
+            web = data.get("web", data)
+            client_id = client_id or web.get("client_id", "")
+            secret = secret or web.get("client_secret", "")
+        except (OSError, json.JSONDecodeError):
+            pass
+    return client_id, secret
+
 APPS = [    
     'catalog',
     'service',
@@ -55,6 +78,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     'company_info',
 ] + APPS
 
@@ -64,6 +92,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -164,6 +193,35 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 EMAIL_USE_TLS = env_bool("EMAIL_USE_TLS", "True")
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "no-reply@localhost")
+
+SITE_ID = 1
+LOGIN_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = "/service/home/"
+LOGOUT_REDIRECT_URL = "/service/home/"
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
+ACCOUNT_EMAIL_VERIFICATION = "optional"
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
+
+GOOGLE_OAUTH2_CLIENT_ID, GOOGLE_OAUTH2_CLIENT_SECRET = load_google_oauth_app(BASE_DIR)
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "APP": {
+            "client_id": GOOGLE_OAUTH2_CLIENT_ID,
+            "secret": GOOGLE_OAUTH2_CLIENT_SECRET,
+            "key": "",
+        }
+    }
+}
 
 RATE_LIMITS = {
     "review": {"limit": 3, "window": 60},

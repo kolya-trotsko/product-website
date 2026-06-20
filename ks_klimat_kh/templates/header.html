@@ -18,7 +18,12 @@
             <li class="nav-item"><a href="{% url 'policy' %}" class="nav-link" aria-current="page">Політика</a></li>
 
             {% if user.is_authenticated %}
+                {% if user.is_staff %}
                 <li class="nav-item"><a href="{% url 'admin:index' %}" class="nav-link" aria-current="page">Адмін</a></li>
+                {% endif %}
+                <li class="nav-item"><a href="{% url 'account_logout' %}" class="nav-link">Вийти</a></li>
+            {% else %}
+                <li class="nav-item"><a href="{% url 'account_signup' %}" class="nav-link">Вхід</a></li>
             {% endif %}
         </ul>
     </header>
