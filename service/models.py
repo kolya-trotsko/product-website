@@ -1,18 +1,13 @@
-﻿from django.conf import settings
+from django.conf import settings
 from django.db import models
 
-
-ORDER_STATUS_NEW = "new"
-ORDER_STATUS_IN_PROGRESS = "in_progress"
-ORDER_STATUS_DONE = "done"
-ORDER_STATUS_CANCELLED = "cancelled"
-
-ORDER_STATUS_CHOICES = [
-    (ORDER_STATUS_NEW, "New"),
-    (ORDER_STATUS_IN_PROGRESS, "In progress"),
-    (ORDER_STATUS_DONE, "Done"),
-    (ORDER_STATUS_CANCELLED, "Cancelled"),
-]
+from ks_klimat_kh.order_status import (
+    ORDER_STATUS_CANCELLED,
+    ORDER_STATUS_CHOICES,
+    ORDER_STATUS_DONE,
+    ORDER_STATUS_IN_PROGRESS,
+    ORDER_STATUS_NEW,
+)
 
 
 class AirConditioningService(models.Model):

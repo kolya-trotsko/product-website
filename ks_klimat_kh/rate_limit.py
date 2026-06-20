@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.cache import cache
 
 
-def _client_ip(request):
+def get_client_ip(request):
     use_forwarded = getattr(settings, "USE_X_FORWARDED_FOR", False)
     forwarded = request.META.get("HTTP_X_FORWARDED_FOR")
     if use_forwarded and forwarded:
@@ -19,7 +19,7 @@ def is_rate_limited(request, action):
     window = int(config.get("window", 0))
     if limit <= 0 or window <= 0:
         return False
-    key = f"rl:{action}:{_client_ip(request)}"
+    key = f"rl:{action}:{get_client_ip(request)}"
     current = cache.get(key)
     if current is None:
         cache.set(key, 1, window)

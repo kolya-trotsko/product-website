@@ -1,0 +1,11 @@
+ORDER_STATUS_NEW = "new"
+ORDER_STATUS_IN_PROGRESS = "in_progress"
+ORDER_STATUS_DONE = "done"
+ORDER_STATUS_CANCELLED = "cancelled"
+
+ORDER_STATUS_CHOICES = [
+    (ORDER_STATUS_NEW, "New"),
+    (ORDER_STATUS_IN_PROGRESS, "In progress"),
+    (ORDER_STATUS_DONE, "Done"),
+    (ORDER_STATUS_CANCELLED, "Cancelled"),
+]

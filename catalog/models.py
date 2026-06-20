@@ -1,22 +1,17 @@
-﻿from django.conf import settings
+from django.conf import settings
 from django.db import models
 
 from .apps import CatalogConfig
+from ks_klimat_kh.order_status import (
+    ORDER_STATUS_CANCELLED,
+    ORDER_STATUS_CHOICES,
+    ORDER_STATUS_DONE,
+    ORDER_STATUS_IN_PROGRESS,
+    ORDER_STATUS_NEW,
+)
 
 
 app_name = CatalogConfig.name
-
-ORDER_STATUS_NEW = "new"
-ORDER_STATUS_IN_PROGRESS = "in_progress"
-ORDER_STATUS_DONE = "done"
-ORDER_STATUS_CANCELLED = "cancelled"
-
-ORDER_STATUS_CHOICES = [
-    (ORDER_STATUS_NEW, "New"),
-    (ORDER_STATUS_IN_PROGRESS, "In progress"),
-    (ORDER_STATUS_DONE, "Done"),
-    (ORDER_STATUS_CANCELLED, "Cancelled"),
-]
 
 
 class Company(models.Model):
