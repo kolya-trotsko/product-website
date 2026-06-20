@@ -1,34 +1,56 @@
-input[name="query"] {
+﻿input[name="query"] {
     border: 1px solid #ccc;
-    padding: 5px;
-    border-radius: 5px;
-    margin-right: 10px;
+    padding: 8px 10px;
+    border-radius: 6px;
 }
 
-/* Style for the search button */
 button[type="submit"] {
     background-color: #0d7fe1;
     color: #fff;
     border: none;
-    border-radius: 5px;
-    padding: 5px 15px;
+    border-radius: 6px;
+    padding: 8px 14px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.2s;
 }
 
-/* Style for the color and company selects */
-select.color-filter, select.company-filter {
+button[type="submit"]:hover {
+    background-color: #0a6cc0;
+}
+
+select.color-filter,
+select.company-filter,
+select.type-filter,
+select.stock-filter,
+.catalog-filters input[type="number"] {
     border: 1px solid #ccc;
-    padding: 5px;
-    border-radius: 5px;
-    margin-right: 10px;
+    padding: 8px;
+    border-radius: 6px;
 }
 
-main form {
+.catalog-filters {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(160px, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.reset-link {
+    display: inline-block;
+    margin-top: 8px;
+    color: #0d7fe1;
+    text-decoration: none;
+}
+
+.compare-form {
+    margin-top: 8px;
+}
+
+.compare-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
     align-items: center;
+    gap: 10px;
     margin-bottom: 12px;
 }
 
@@ -41,15 +63,24 @@ main form {
 .conditioner-item {
     flex: 1 1 calc(33.333% - 16px);
     margin: 0;
-    padding: 10px;
+    padding: 12px;
     border: 1px solid #ccc;
     box-shadow: 2px 2px 5px #888888;
     transition: background-color 0.2s;
-    cursor: pointer; /* Додайте курсор на товари для вказівки, що вони клікабельні */
+    cursor: pointer;
+    position: relative;
+}
+
+.compare-check {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    font-size: 14px;
+    margin-bottom: 8px;
 }
 
 .conditioner-item:hover {
-    background-color: #e0e0e0;
+    background-color: #f1f7ff;
 }
 
 .conditioner-image {
@@ -59,12 +90,16 @@ main form {
     display: block;
 }
 
-.color-filter {
-    margin-top: 10px;
+.stock {
+    font-weight: 700;
 }
 
-.company-filter {
-    margin-top: 10px;
+.stock.in-stock {
+    color: #15803d;
+}
+
+.stock.out-of-stock {
+    color: #b91c1c;
 }
 
 .pagination {
@@ -78,32 +113,66 @@ main form {
     background-color: #007bff;
     color: #fff;
     margin-right: 5px;
+    border-radius: 4px;
 }
 
 .pagination a:hover {
-    background-color: #e0e0e0;
+    background-color: #005fcc;
 }
 
-@media (max-width: 900px) {
+.compare-table-wrap {
+    overflow-x: auto;
+    margin: 12px 0 16px;
+}
+
+.compare-table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 780px;
+}
+
+.compare-table th,
+.compare-table td {
+    border: 1px solid #d6e2f0;
+    padding: 10px;
+    vertical-align: top;
+}
+
+.compare-table th {
+    background: #eef6ff;
+}
+
+.compare-image {
+    width: 180px;
+    max-width: 100%;
+    height: auto;
+}
+
+@media (max-width: 1100px) {
+    .catalog-filters {
+        grid-template-columns: repeat(3, minmax(150px, 1fr));
+    }
+
     .conditioner-item {
         flex: 1 1 calc(50% - 16px);
     }
 }
 
-@media (max-width: 600px) {
-    main form {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    main form input,
-    main form select,
-    main form button {
-        width: 100%;
-        margin-right: 0;
+@media (max-width: 700px) {
+    .catalog-filters {
+        grid-template-columns: 1fr;
     }
 
     .conditioner-item {
         flex: 1 1 100%;
+    }
+
+    .compare-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .compare-actions button {
+        width: 100%;
     }
 }

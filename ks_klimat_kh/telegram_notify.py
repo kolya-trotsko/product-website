@@ -1,4 +1,4 @@
-import json
+﻿import json
 import logging
 from html import escape
 from urllib import error, request
@@ -14,24 +14,21 @@ def _e(value):
 
 
 def _is_enabled():
-    return (
-        getattr(settings, "TELEGRAM_NOTIFICATIONS_ENABLED", False)
-        and bool(getattr(settings, "TELEGRAM_BOT_TOKEN", ""))
-        and bool(getattr(settings, "TELEGRAM_ADMIN_CHAT_IDS", []))
-    )
+    return bool(getattr(settings, "TELEGRAM_NOTIFICATIONS_ENABLED", False) and getattr(settings, "TELEGRAM_BOT_TOKEN", ""))
 
 
-def _send_message(text):
+def send_message(text, chat_id=None):
     if not _is_enabled():
         return
 
     token = settings.TELEGRAM_BOT_TOKEN
     url = f"https://api.telegram.org/bot{token}/sendMessage"
+    target_chats = [chat_id] if chat_id is not None else list(getattr(settings, "TELEGRAM_ADMIN_CHAT_IDS", []))
 
-    for chat_id in settings.TELEGRAM_ADMIN_CHAT_IDS:
+    for target in target_chats:
         payload = json.dumps(
             {
-                "chat_id": chat_id,
+                "chat_id": target,
                 "text": text,
                 "parse_mode": "HTML",
                 "disable_web_page_preview": True,
@@ -47,7 +44,7 @@ def _send_message(text):
             with request.urlopen(req, timeout=8) as response:
                 response.read()
         except (error.URLError, error.HTTPError, TimeoutError) as exc:
-            logger.warning("Failed to send telegram notification to %s: %s", chat_id, exc)
+            logger.warning("Failed to send telegram message to %s: %s", target, exc)
 
 
 def notify_home_order(order, request_path=""):
@@ -59,7 +56,7 @@ def notify_home_order(order, request_path=""):
         f"Тип: {_e(order.place)}\n"
         f"Сторінка: <code>{_e(request_path or order.source_page)}</code>"
     )
-    _send_message(text)
+    send_message(text)
 
 
 def notify_service_order(order, request_path=""):
@@ -72,7 +69,7 @@ def notify_service_order(order, request_path=""):
         f"Послуги: {_e(order.place)}\n"
         f"Сторінка: <code>{_e(request_path or order.source_page)}</code>"
     )
-    _send_message(text)
+    send_message(text)
 
 
 def notify_conditioner_order(order, request_path=""):
@@ -86,4 +83,28 @@ def notify_conditioner_order(order, request_path=""):
         f"Колір: {_e(order.color.name)}\n"
         f"Сторінка: <code>{_e(request_path or order.source_page)}</code>"
     )
-    _send_message(text)
+    send_message(text)
+
+
+def notify_unaccepted_order(order_type, order):
+    text = (
+        "⏱ <b>Неприйнята заявка</b>\n"
+        f"Тип: {_e(order_type)}\n"
+        f"ID: <code>{_e(order.id)}</code>\n"
+        f"Клієнт: <b>{_e(order.name)}</b>\n"
+        f"Телефон: <code>{_e(order.phone)}</code>\n"
+        f"Створено: {_e(order.created_at)}"
+    )
+    send_message(text)
+
+
+def notify_service_cycle(order_type, order, months):
+    text = (
+        "🔁 <b>Нагадування про сервіс</b>\n"
+        f"Період: {_e(months)} міс.\n"
+        f"Тип заявки: {_e(order_type)}\n"
+        f"ID: <code>{_e(order.id)}</code>\n"
+        f"Клієнт: <b>{_e(order.name)}</b>\n"
+        f"Телефон: <code>{_e(order.phone)}</code>"
+    )
+    send_message(text)

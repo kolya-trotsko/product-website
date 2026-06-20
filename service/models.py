@@ -38,6 +38,9 @@ class Order(models.Model):
     admin_comment = models.TextField(blank=True, default="")
     source_page = models.CharField(max_length=100, blank=True, default="", db_index=True)
     client_ip = models.GenericIPAddressField(null=True, blank=True)
+    unaccepted_reminded_at = models.DateTimeField(null=True, blank=True)
+    service_reminder_6m_sent_at = models.DateTimeField(null=True, blank=True)
+    service_reminder_12m_sent_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -64,6 +67,9 @@ class ServiceOrder(models.Model):
     admin_comment = models.TextField(blank=True, default="")
     source_page = models.CharField(max_length=100, blank=True, default="", db_index=True)
     client_ip = models.GenericIPAddressField(null=True, blank=True)
+    unaccepted_reminded_at = models.DateTimeField(null=True, blank=True)
+    service_reminder_6m_sent_at = models.DateTimeField(null=True, blank=True)
+    service_reminder_12m_sent_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -72,3 +78,43 @@ class ServiceOrder(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class BotLead(models.Model):
+    INTENT_CONSULT = "consultation"
+    INTENT_PICK_MODEL = "pick_model"
+    INTENT_CHOICES = [
+        (INTENT_CONSULT, "Хочу консультацію"),
+        (INTENT_PICK_MODEL, "Підібрати модель"),
+    ]
+
+    STATUS_NEW = "new"
+    STATUS_IN_PROGRESS = "in_progress"
+    STATUS_DONE = "done"
+    STATUS_CHOICES = [
+        (STATUS_NEW, "New"),
+        (STATUS_IN_PROGRESS, "In progress"),
+        (STATUS_DONE, "Done"),
+    ]
+
+    telegram_user_id = models.BigIntegerField(db_index=True)
+    telegram_username = models.CharField(max_length=150, blank=True, default="")
+    full_name = models.CharField(max_length=200, blank=True, default="")
+    intent = models.CharField(max_length=30, choices=INTENT_CHOICES)
+    message = models.TextField(blank=True, default="")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_NEW, db_index=True)
+    manager = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="bot_leads",
+    )
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ("-created_at",)
+
+    def __str__(self):
+        return f"{self.get_intent_display()} ({self.telegram_user_id})"

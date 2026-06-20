@@ -39,6 +39,10 @@
             <h2>{{ conditioner.name }}</h2>
             <p class="price">Ціна: {{ conditioner.price|floatformat:"2" }} грн</p>
             <p class="manufacturer">Виробник: {{ conditioner.company.name }}</p>
+            <p class="manufacturer">Тип: {{ conditioner.get_conditioner_type_display }}</p>
+            <p class="manufacturer">Рекомендована площа: до {{ conditioner.recommended_area_m2 }} м²</p>
+            <p class="manufacturer">Гарантія: {{ conditioner.warranty_months }} міс.</p>
+            <p class="manufacturer">Наявність: {% if conditioner.is_in_stock %}В наявності{% else %}Немає в наявності{% endif %}</p>
             <p class="description">Опис: {{ conditioner.description }}</p>
             <p class="colors">Доступні кольори:</p>
             <ul class="color-list">

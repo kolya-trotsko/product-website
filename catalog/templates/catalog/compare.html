@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block address %}{{ contacts.address }}{% endblock %}
+{% block email %}{{ contacts.email }}{% endblock %}
+{% block phone %}{{ contacts.phone }}{% endblock %}
+{% block instagram_link %}{{ contacts.instagram_link }}{% endblock %}
+{% block telegram_link %}{{ contacts.telegram_link }}{% endblock %}
+{% block viber_link %}{{ contacts.viber_link }}{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/catalog.css' %}">
+{% endblock %}
+
+{% block content %}
+<main>
+    <h1>Порівняння кондиціонерів</h1>
+    {% if conditioners %}
+        <div class="compare-table-wrap">
+            <table class="compare-table">
+                <tr>
+                    <th>Параметр</th>
+                    {% for c in conditioners %}
+                        <th>{{ c.name }}</th>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>Фото</td>
+                    {% for c in conditioners %}
+                        <td><img src="{{ c.photo.url }}" alt="{{ c.name }}" class="compare-image"></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>Ціна</td>
+                    {% for c in conditioners %}<td>{{ c.price }} грн</td>{% endfor %}
+                </tr>
+                <tr>
+                    <td>Виробник</td>
+                    {% for c in conditioners %}<td>{{ c.company.name }}</td>{% endfor %}
+                </tr>
+                <tr>
+                    <td>Тип</td>
+                    {% for c in conditioners %}<td>{{ c.get_conditioner_type_display }}</td>{% endfor %}
+                </tr>
+                <tr>
+                    <td>Площа</td>
+                    {% for c in conditioners %}<td>до {{ c.recommended_area_m2 }} м²</td>{% endfor %}
+                </tr>
+                <tr>
+                    <td>Потужність</td>
+                    {% for c in conditioners %}<td>{% if c.power_btu %}{{ c.power_btu }} BTU{% else %}-{% endif %}</td>{% endfor %}
+                </tr>
+                <tr>
+                    <td>Енергоефективність</td>
+                    {% for c in conditioners %}<td>{{ c.energy_class|default:"-" }}</td>{% endfor %}
+                </tr>
+                <tr>
+                    <td>Країна</td>
+                    {% for c in conditioners %}<td>{{ c.country|default:"-" }}</td>{% endfor %}
+                </tr>
+                <tr>
+                    <td>Гарантія</td>
+                    {% for c in conditioners %}<td>{{ c.warranty_months }} міс.</td>{% endfor %}
+                </tr>
+                <tr>
+                    <td>Наявність</td>
+                    {% for c in conditioners %}
+                        <td>{% if c.is_in_stock %}В наявності{% else %}Немає{% endif %}</td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+    {% else %}
+        <p>Не обрано моделей для порівняння.</p>
+    {% endif %}
+    <a class="reset-link" href="{% url 'catalog' %}">Повернутися до каталогу</a>
+</main>
+{% endblock %}

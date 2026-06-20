@@ -69,7 +69,15 @@ class FreshnessFilter(admin.SimpleListFilter):
 class ConditionerOrderAdminMixin:
     date_hierarchy = "created_at"
     list_per_page = 50
-    readonly_fields = ("created_at", "updated_at", "source_page", "client_ip")
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+        "source_page",
+        "client_ip",
+        "unaccepted_reminded_at",
+        "service_reminder_6m_sent_at",
+        "service_reminder_12m_sent_at",
+    )
     actions = ("mark_new", "mark_in_progress", "mark_done", "mark_cancelled")
 
     @admin.display(description="Status", ordering="status")
@@ -125,9 +133,18 @@ class ColorAdmin(admin.ModelAdmin):
 
 @admin.register(AirConditioner)
 class AirConditionerAdmin(admin.ModelAdmin):
-    list_display = ("name", "company", "price", "photo_preview")
-    list_filter = ("company", "colors")
-    search_fields = ("name", "company__name")
+    list_display = (
+        "name",
+        "company",
+        "conditioner_type",
+        "recommended_area_m2",
+        "warranty_months",
+        "is_in_stock",
+        "price",
+        "photo_preview",
+    )
+    list_filter = ("company", "conditioner_type", "is_in_stock", "warranty_months", "colors")
+    search_fields = ("name", "company__name", "country", "energy_class")
     list_select_related = ("company",)
     filter_horizontal = ("colors",)
 
@@ -168,5 +185,18 @@ class ConditionerOrderAdmin(ConditionerOrderAdminMixin, admin.ModelAdmin):
         ("Client", {"fields": ("name", "phone", "address")}),
         ("Order", {"fields": ("conditioner", "color")}),
         ("Workflow", {"fields": ("status", "manager", "admin_comment")}),
-        ("Meta", {"fields": ("source_page", "client_ip", "created_at", "updated_at")}),
+        (
+            "Meta",
+            {
+                "fields": (
+                    "source_page",
+                    "client_ip",
+                    "unaccepted_reminded_at",
+                    "service_reminder_6m_sent_at",
+                    "service_reminder_12m_sent_at",
+                    "created_at",
+                    "updated_at",
+                )
+            },
+        ),
     )

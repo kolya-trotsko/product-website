@@ -7,6 +7,7 @@ from django.utils.html import format_html
 
 from .models import (
     AirConditioningService,
+    BotLead,
     Order,
     ServiceOrder,
     ORDER_STATUS_CANCELLED,
@@ -67,7 +68,15 @@ class FreshnessFilter(admin.SimpleListFilter):
 class OrderAdminMixin:
     date_hierarchy = "created_at"
     list_per_page = 50
-    readonly_fields = ("created_at", "updated_at", "source_page", "client_ip")
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+        "source_page",
+        "client_ip",
+        "unaccepted_reminded_at",
+        "service_reminder_6m_sent_at",
+        "service_reminder_12m_sent_at",
+    )
     actions = ("mark_new", "mark_in_progress", "mark_done", "mark_cancelled")
 
     @admin.display(description="Status", ordering="status")
@@ -126,7 +135,20 @@ class OrderAdmin(OrderAdminMixin, admin.ModelAdmin):
     fieldsets = (
         ("Client", {"fields": ("name", "phone", "place")}),
         ("Workflow", {"fields": ("status", "manager", "admin_comment")}),
-        ("Meta", {"fields": ("source_page", "client_ip", "created_at", "updated_at")}),
+        (
+            "Meta",
+            {
+                "fields": (
+                    "source_page",
+                    "client_ip",
+                    "unaccepted_reminded_at",
+                    "service_reminder_6m_sent_at",
+                    "service_reminder_12m_sent_at",
+                    "created_at",
+                    "updated_at",
+                )
+            },
+        ),
     )
 
 
@@ -141,5 +163,27 @@ class ServiceOrderAdmin(OrderAdminMixin, admin.ModelAdmin):
     fieldsets = (
         ("Client", {"fields": ("name", "phone", "address", "place")}),
         ("Workflow", {"fields": ("status", "manager", "admin_comment")}),
-        ("Meta", {"fields": ("source_page", "client_ip", "created_at", "updated_at")}),
+        (
+            "Meta",
+            {
+                "fields": (
+                    "source_page",
+                    "client_ip",
+                    "unaccepted_reminded_at",
+                    "service_reminder_6m_sent_at",
+                    "service_reminder_12m_sent_at",
+                    "created_at",
+                    "updated_at",
+                )
+            },
+        ),
     )
+
+
+@admin.register(BotLead)
+class BotLeadAdmin(admin.ModelAdmin):
+    list_display = ("created_at", "intent", "telegram_user_id", "telegram_username", "full_name", "status", "manager")
+    list_filter = ("intent", "status", "manager", "created_at")
+    search_fields = ("telegram_username", "full_name", "message", "telegram_user_id")
+    list_editable = ("status", "manager")
+    list_display_links = ("telegram_user_id",)

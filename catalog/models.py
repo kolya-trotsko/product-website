@@ -36,10 +36,24 @@ class Color(models.Model):
 
 
 class AirConditioner(models.Model):
+    TYPE_NORMAL = "normal"
+    TYPE_INVERTER = "inverter"
+    TYPE_CHOICES = [
+        (TYPE_NORMAL, "Звичайний"),
+        (TYPE_INVERTER, "Інверторний"),
+    ]
+
     name = models.CharField(max_length=100)
+    conditioner_type = models.CharField(max_length=20, choices=TYPE_CHOICES, default=TYPE_NORMAL, db_index=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     photo = models.ImageField(upload_to=app_name + "/air_conditioner_photos/")
     description = models.TextField()
+    recommended_area_m2 = models.PositiveIntegerField(default=20, db_index=True)
+    power_btu = models.PositiveIntegerField(null=True, blank=True)
+    energy_class = models.CharField(max_length=20, blank=True, default="")
+    country = models.CharField(max_length=100, blank=True, default="")
+    is_in_stock = models.BooleanField(default=True, db_index=True)
+    warranty_months = models.PositiveSmallIntegerField(default=12, db_index=True)
     colors = models.ManyToManyField(Color, blank=True, related_name="air_conditioners")
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
@@ -74,6 +88,9 @@ class ConditionerOrder(models.Model):
     admin_comment = models.TextField(blank=True, default="")
     source_page = models.CharField(max_length=100, blank=True, default="", db_index=True)
     client_ip = models.GenericIPAddressField(null=True, blank=True)
+    unaccepted_reminded_at = models.DateTimeField(null=True, blank=True)
+    service_reminder_6m_sent_at = models.DateTimeField(null=True, blank=True)
+    service_reminder_12m_sent_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
 

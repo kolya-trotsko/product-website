@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.urls import reverse
 from company_info.models import CompanyInfo
-from .models import AirConditioner, Review
+from .models import AirConditioner, Review, Company, Color
 from .forms import ReviewForm, ConditionerOrderForm
 from ks_klimat_kh.rate_limit import is_rate_limited
 from ks_klimat_kh.telegram_notify import notify_conditioner_order
@@ -19,6 +19,11 @@ def catalog(request):
     search_query = request.GET.get('query', '')
     color_filter = request.GET.get('color', '')
     company_filter = request.GET.get('company', '')
+    type_filter = request.GET.get('type', '')
+    stock_filter = request.GET.get('stock', '')
+    warranty_min = request.GET.get('warranty_min', '')
+    area_min = request.GET.get('area_min', '')
+    area_max = request.GET.get('area_max', '')
     page_number = request.GET.get('page', 1)
 
     conditioners = (
@@ -35,19 +40,43 @@ def catalog(request):
     if company_filter:
         conditioners = conditioners.filter(company__name=company_filter)
 
+    if type_filter:
+        conditioners = conditioners.filter(conditioner_type=type_filter)
+
+    if stock_filter == "in_stock":
+        conditioners = conditioners.filter(is_in_stock=True)
+    elif stock_filter == "out_of_stock":
+        conditioners = conditioners.filter(is_in_stock=False)
+
+    if warranty_min.isdigit():
+        conditioners = conditioners.filter(warranty_months__gte=int(warranty_min))
+
+    if area_min.isdigit():
+        conditioners = conditioners.filter(recommended_area_m2__gte=int(area_min))
+    if area_max.isdigit():
+        conditioners = conditioners.filter(recommended_area_m2__lte=int(area_max))
+
     paginator = Paginator(conditioners, 15)
     conditioners = paginator.get_page(page_number)
 
-    colors = AirConditioner.objects.values_list('colors__name', flat=True).distinct()
-    companies = AirConditioner.objects.values_list('company__name', flat=True).distinct()
+    colors = Color.objects.values_list("name", flat=True).order_by("name")
+    companies = Company.objects.values_list("name", flat=True).order_by("name")
 
     return render(request, 'catalog/catalog.html', {
         'title': 'Catalog',
         'conditioners': conditioners,
         'search_query': search_query,
+        'color_filter': color_filter,
+        'company_filter': company_filter,
+        'type_filter': type_filter,
+        'stock_filter': stock_filter,
+        'warranty_min': warranty_min,
+        'area_min': area_min,
+        'area_max': area_max,
         'contacts': contacts,
         'colors': colors,
         'companies': companies,
+        'type_choices': AirConditioner.TYPE_CHOICES,
     })
 
 
@@ -105,3 +134,23 @@ def add_review(request, conditioner_id):
                     messages.error(request, f"{field_label}: {error}")
 
     return redirect('conditioner_detail', conditioner_id=conditioner_id)
+
+
+def compare_conditioners(request):
+    contacts = CompanyInfo.objects.first()
+    ids = request.GET.getlist("ids")
+    parsed_ids = [int(i) for i in ids if i.isdigit()]
+    conditioners = (
+        AirConditioner.objects.select_related("company")
+        .prefetch_related("colors")
+        .filter(id__in=parsed_ids)[:4]
+    )
+    return render(
+        request,
+        "catalog/compare.html",
+        {
+            "title": "Compare",
+            "contacts": contacts,
+            "conditioners": conditioners,
+        },
+    )
