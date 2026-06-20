@@ -1,4 +1,4 @@
-﻿import json
+import json
 import logging
 from html import escape
 from urllib import error, request

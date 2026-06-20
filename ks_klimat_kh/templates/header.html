@@ -1,4 +1,4 @@
-﻿{% load static %}
+{% load static %}
 
 <div class="header-container">
     <header class="nav">
@@ -7,18 +7,18 @@
         </a>
 
         <ul>
-            <li class="nav-item"><a href="{% url 'home' %}" class="nav-link" aria-current="page">Р“РѕР»РѕРІРЅР°</a></li>
-            <li class="nav-item"><a href="{% url 'catalog' %}" class="nav-link" aria-current="page">РљР°С‚Р°Р»РѕРі</a></li>
-            <li class="nav-item"><a href="{% url 'service' %}" class="nav-link" aria-current="page">РџРѕСЃР»СѓРіРё</a></li>
-            <li class="nav-item"><a href="{% url 'policy' %}" class="nav-link" aria-current="page">РџРѕР»С–С‚РёРєР°</a></li>
+            <li class="nav-item"><a href="{% url 'home' %}" class="nav-link">Головна</a></li>
+            <li class="nav-item"><a href="{% url 'catalog' %}" class="nav-link">Каталог</a></li>
+            <li class="nav-item"><a href="{% url 'service' %}" class="nav-link">Послуги</a></li>
+            <li class="nav-item"><a href="{% url 'policy' %}" class="nav-link">Політика</a></li>
 
             {% if user.is_authenticated %}
                 {% if user.is_staff %}
-                <li class="nav-item"><a href="{% url 'admin:index' %}" class="nav-link" aria-current="page">РђРґРјС–РЅ</a></li>
+                <li class="nav-item"><a href="{% url 'admin:index' %}" class="nav-link">Адмін</a></li>
                 {% endif %}
-                <li class="nav-item"><a href="{% url 'account_logout' %}" class="nav-link">Р’РёР№С‚Рё</a></li>
+                <li class="nav-item"><a href="{% url 'account_logout' %}" class="nav-link">Вийти</a></li>
             {% else %}
-                <li class="nav-item"><a href="{% url 'account_login' %}" class="nav-link">Р’С…С–Рґ</a></li>
+                <li class="nav-item"><a href="{% url 'account_login' %}" class="nav-link">Вхід</a></li>
             {% endif %}
         </ul>
     </header>
