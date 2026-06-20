@@ -1,13 +1,26 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 {% load static %}
-<html lang="en">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}KS KLIMAT KH{% endblock %}</title>
+    <title>{% block title %}{{ seo_title|default:site_name }}{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{{ seo_description|default:default_seo_description }}{% endblock %}">
+    <link rel="canonical" href="{% block canonical_url %}{{ canonical_url }}{% endblock %}">
+    {% if seo_noindex %}<meta name="robots" content="noindex,follow">{% endif %}
+    <meta property="og:locale" content="uk_UA">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:site_name" content="{{ site_name }}">
+    <meta property="og:title" content="{% block og_title %}{{ seo_title|default:site_name }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ seo_description|default:default_seo_description }}{% endblock %}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{% block og_image %}{{ seo_image|default:default_seo_image }}{% endblock %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/header.css' %}">
-    <link rel="icon" type="image/png" href="{{ MEDIA_URL }}logos/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="{{ MEDIA_URL }}logos/favicon.ico">
+    {% if structured_data %}
+        <script type="application/ld+json">{{ structured_data|safe }}</script>
+    {% endif %}
     {% block extra_head %}{% endblock %}
 </head>
 
@@ -31,11 +44,11 @@
     {% block footer %}
         <footer class="site-footer">
             <div class="footer-left">
-                <h4>Р—РІ'СЏР·Р°С‚РёСЃСЏ Р· РЅР°РјРё</h4>
+                <h4>Зв'язатися з нами</h4>
                 <ul>
-                    <li>РђРґСЂРµСЃР°: {% block address %}Default Address{% endblock %}</li>
+                    <li>Адреса: {% block address %}Харків{% endblock %}</li>
                     <li>email: {% block email %}Default email{% endblock %}</li>
-                    <li>РўРµР»РµС„РѕРЅ: {% block phone %}Default Phone{% endblock %}</li>
+                    <li>Телефон: {% block phone %}Default Phone{% endblock %}</li>
                 </ul>
             </div>
 

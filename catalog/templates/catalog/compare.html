@@ -13,7 +13,6 @@
 {% endblock %}
 
 {% block content %}
-<main>
     <h1>Порівняння кондиціонерів</h1>
     {% if conditioners %}
         <div class="compare-table-wrap">
@@ -74,5 +73,4 @@
         <p>Не обрано моделей для порівняння.</p>
     {% endif %}
     <a class="reset-link" href="{% url 'catalog' %}">Повернутися до каталогу</a>
-</main>
 {% endblock %}

@@ -116,6 +116,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
+                'ks_klimat_kh.context_processors.site_metadata',
             ],
         },
     },
@@ -166,9 +167,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'uk'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Kyiv'
 
 USE_I18N = True
 
@@ -197,6 +198,9 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 EMAIL_USE_TLS = env_bool("EMAIL_USE_TLS", "True")
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "no-reply@localhost")
+
+SITE_NAME = os.getenv("SITE_NAME", "KS KLIMAT KH")
+SITE_URL = os.getenv("SITE_URL", "")
 
 SITE_ID = 1
 LOGIN_URL = "/accounts/login/"

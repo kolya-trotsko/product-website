@@ -5,13 +5,9 @@ from .models import AirConditioningService
 from catalog.models import Company
 from .models import Order, ServiceOrder
 from .forms import OrderForm, ServiceOrderForm
-from ks_klimat_kh.rate_limit import is_rate_limited
+from ks_klimat_kh.rate_limit import get_client_ip, is_rate_limited
+from ks_klimat_kh.seo import local_business_schema
 from ks_klimat_kh.telegram_notify import notify_home_order, notify_service_order
-
-
-def _request_ip(request):
-    return request.META.get("REMOTE_ADDR", "")
-
 
 def service(request):
     contacts = CompanyInfo.objects.first()
@@ -30,16 +26,21 @@ def service(request):
                 place=", ".join(form.cleaned_data["services"]),
                 address=form.cleaned_data["address"],
                 source_page=request.path,
-                client_ip=_request_ip(request),
+                client_ip=get_client_ip(request),
             )
             notify_service_order(order, request.path)
             return redirect('service')
         
     return render(request, 'service/service.html', {
-                            'title': 'service', 
+                            'seo_title': 'Ремонт і сервіс кондиціонерів у Харкові | KS KLIMAT KH',
+                            'seo_description': (
+                                'Ремонт, діагностика, чистка та сервісне обслуговування кондиціонерів у Харкові. '
+                                'Актуальні ціни на послуги та швидке оформлення заявки.'
+                            ),
                             'contacts': contacts, 
                             'services': services,
                             'form': form,
+                            'structured_data': local_business_schema(request, contacts),
                             })
 
 
@@ -58,16 +59,21 @@ def home(request):
                 phone=form.cleaned_data["phone"],
                 place=form.cleaned_data["option"],
                 source_page=request.path,
-                client_ip=_request_ip(request),
+                client_ip=get_client_ip(request),
             )
             notify_home_order(order, request.path)
             return redirect('home')
     
     return render(request, 'home/home.html', {
-                        'title': 'Home', 
+                        'seo_title': 'Чистка кондиціонерів у Харкові | KS KLIMAT KH',
+                        'seo_description': (
+                            'Комплексна чистка кондиціонерів у Харкові: розбір внутрішнього блоку, мийка фільтрів, '
+                            'теплообмінника, вентилятора, дренажу та зовнішнього блоку.'
+                        ),
                         'contacts': contacts, 
                         'companies': companies,
                         'form': form,
+                        'structured_data': local_business_schema(request, contacts),
                         })
 
 
@@ -75,6 +81,8 @@ def policy(request):
     contacts = CompanyInfo.objects.first()
     
     return render(request, 'policy/policy.html', {
-                        'title': 'Policy', 
+                        'seo_title': 'Політика конфіденційності | KS KLIMAT KH',
+                        'seo_description': 'Політика конфіденційності сайту KS KLIMAT KH: як ми збираємо, використовуємо та захищаємо персональні дані.',
+                        'seo_noindex': True,
                         'contacts': contacts, 
                         })

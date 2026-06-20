@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block address %}
@@ -36,7 +36,7 @@
     <div class="product-info">
         <img src="{{ conditioner.photo.url }}" alt="{{ conditioner.name }}" class="conditioner-image" loading="lazy" decoding="async">
         <div class="product-details">
-            <h2>{{ conditioner.name }}</h2>
+            <h1>{{ conditioner.name }}</h1>
             <p class="price">Ціна: {{ conditioner.price|floatformat:"2" }} грн</p>
             <p class="manufacturer">Виробник: {{ conditioner.company.name }}</p>
             <p class="manufacturer">Тип: {{ conditioner.get_conditioner_type_display }}</p>

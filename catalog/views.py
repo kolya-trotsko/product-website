@@ -6,13 +6,9 @@ from django.urls import reverse
 from company_info.models import CompanyInfo
 from .models import AirConditioner, Review, Company, Color
 from .forms import ReviewForm, ConditionerOrderForm
-from ks_klimat_kh.rate_limit import is_rate_limited
+from ks_klimat_kh.rate_limit import get_client_ip, is_rate_limited
+from ks_klimat_kh.seo import local_business_schema, product_schema
 from ks_klimat_kh.telegram_notify import notify_conditioner_order
-
-
-def _request_ip(request):
-    return request.META.get("REMOTE_ADDR", "")
-
 
 def catalog(request):
     contacts = CompanyInfo.objects.first()
@@ -63,7 +59,12 @@ def catalog(request):
     companies = Company.objects.values_list("name", flat=True).order_by("name")
 
     return render(request, 'catalog/catalog.html', {
-        'title': 'Catalog',
+        'seo_title': 'Каталог кондиціонерів у Харкові | KS KLIMAT KH',
+        'seo_description': (
+            'Каталог кондиціонерів у Харкові: інверторні та звичайні моделі, фільтр за брендом, '
+            'типом, площею приміщення, гарантією та наявністю.'
+        ),
+        'seo_noindex': bool(request.GET),
         'conditioners': conditioners,
         'search_query': search_query,
         'color_filter': color_filter,
@@ -77,6 +78,7 @@ def catalog(request):
         'colors': colors,
         'companies': companies,
         'type_choices': AirConditioner.TYPE_CHOICES,
+        'structured_data': local_business_schema(request, contacts),
     })
 
 
@@ -88,6 +90,7 @@ def conditioner_detail(request, conditioner_id):
     contacts = CompanyInfo.objects.first()
     reviews = Review.objects.select_related("user").filter(conditioner_id=conditioner_id)
     order_form = ConditionerOrderForm(conditioner=conditioner)
+    seo_image = request.build_absolute_uri(conditioner.photo.url) if conditioner.photo else ""
 
     if request.method == 'POST':
         if is_rate_limited(request, "conditioner_order"):
@@ -97,12 +100,19 @@ def conditioner_detail(request, conditioner_id):
             order = order_form.save(commit=False)
             order.conditioner = conditioner
             order.source_page = request.path
-            order.client_ip = _request_ip(request)
+            order.client_ip = get_client_ip(request)
             order.save()
             notify_conditioner_order(order, request.path)
             return redirect('conditioner_detail', conditioner_id=conditioner_id)
 
     return render(request, 'catalog/conditioner_detail.html', {
+        'seo_title': f'{conditioner.name} купити в Харкові | KS KLIMAT KH',
+        'seo_description': (
+            f'{conditioner.name}: ціна {conditioner.price} грн, виробник {conditioner.company.name}, '
+            f'площа до {conditioner.recommended_area_m2} м², гарантія {conditioner.warranty_months} міс.'
+        ),
+        'seo_image': seo_image,
+        'structured_data': product_schema(request, conditioner, reviews),
         'conditioner': conditioner,
         'contacts': contacts,
         'reviews': reviews,
@@ -150,6 +160,9 @@ def compare_conditioners(request):
         "catalog/compare.html",
         {
             "title": "Compare",
+            "seo_title": "Порівняння кондиціонерів | KS KLIMAT KH",
+            "seo_description": "Порівняння обраних моделей кондиціонерів за ціною, типом, площею, гарантією та наявністю.",
+            "seo_noindex": True,
             "contacts": contacts,
             "conditioners": conditioners,
         },

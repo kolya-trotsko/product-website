@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block address %}{{ contacts.address }}{% endblock %}
@@ -15,7 +15,8 @@
 {% endblock %}
 
 {% block content %}
-<main>
+    <h1>Каталог кондиціонерів у Харкові</h1>
+
     <form method="get" action="{% url 'catalog' %}" class="catalog-filters">
         <input type="text" name="query" value="{{ search_query }}" placeholder="Пошук моделі...">
 
@@ -69,7 +70,7 @@
                     </label>
 
                     <img src="{{ conditioner.photo.url }}" alt="{{ conditioner.name }}" class="conditioner-image" loading="lazy" decoding="async">
-                    <h2>{{ conditioner.name }}</h2>
+                    <h2><a href="{% url 'conditioner_detail' conditioner.id %}">{{ conditioner.name }}</a></h2>
                     <p>Ціна: {{ conditioner.price }} грн</p>
                     <p>Виробник: {{ conditioner.company.name }}</p>
                     <p>Тип: {{ conditioner.get_conditioner_type_display }}</p>
@@ -108,5 +109,4 @@
             {% endif %}
         </span>
     </div>
-</main>
 {% endblock %}
