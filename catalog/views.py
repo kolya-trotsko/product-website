@@ -2,6 +2,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib import messages
+from django.urls import reverse
 from company_info.models import CompanyInfo
 from .models import AirConditioner, Review
 from .forms import ReviewForm, ConditionerOrderForm
@@ -65,13 +66,18 @@ def add_review(request, conditioner_id):
     conditioner = get_object_or_404(AirConditioner, id=conditioner_id)
 
     if request.method == 'POST':
+        if not request.user.is_authenticated:
+            messages.info(request, 'Спочатку увійдіть у профіль, щоб залишити відгук.')
+            login_url = reverse('account_login')
+            return redirect(f"{login_url}?next={request.path}")
         if is_rate_limited(request, "review"):
             return HttpResponse(status=429)
         form = ReviewForm(request.POST)
         if form.is_valid():
             review = form.save(commit=False)
             review.conditioner = conditioner
+            review.user = request.user
             review.save()
-            messages.success(request, 'Review submitted.')
+            messages.success(request, 'Відгук додано.')
 
     return redirect('conditioner_detail', conditioner_id=conditioner_id)

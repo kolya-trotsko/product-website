@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from .apps import CatalogConfig
 from django.utils.translation import gettext_lazy as _
 
@@ -36,12 +37,12 @@ class AirConditioner(models.Model):
 
 class Review(models.Model):
     conditioner = models.ForeignKey(AirConditioner, on_delete=models.CASCADE)
-    user = models.CharField(max_length=100)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     text = models.TextField()
     rating = models.IntegerField(null=True)
 
     def __str__(self):
-        return f"Review: {self.user} ({self.conditioner})"
+        return f"Review: {self.user.get_username()} ({self.conditioner})"
 
 
 class ConditionerOrder(models.Model):

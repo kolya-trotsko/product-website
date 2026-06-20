@@ -1,6 +1,5 @@
 import re
 from django import forms
-from django.core.validators import EmailValidator
 from .models import Review, ConditionerOrder
 
 
@@ -8,11 +7,9 @@ PHONE_RE = re.compile(r"^[0-9+()\\-\\s]{7,20}$")
 
 
 class ReviewForm(forms.ModelForm):
-    user = forms.EmailField(validators=[EmailValidator()])
-
     class Meta:
         model = Review
-        fields = ['text', 'rating', 'user']
+        fields = ['text', 'rating']
 
     def clean_rating(self):
         rating = self.cleaned_data.get('rating')

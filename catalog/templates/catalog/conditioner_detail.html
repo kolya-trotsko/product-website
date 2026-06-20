@@ -78,29 +78,29 @@
 
     <div class="add-product-review">
         <h3>Додати відгук:</h3>
-        <form method="post" action="{% url 'add_review' conditioner.id %}">
+        {% if user.is_authenticated %}
+            <form method="post" action="{% url 'add_review' conditioner.id %}">
+                {% csrf_token %}
+                <label for="rating">Оцінка товару:</label>
+                <div class="rating-stars">
+                    <input type="radio" name="rating" value="1" id="star1"><label for="star1" class="star">?</label>
+                    <input type="radio" name="rating" value="2" id="star2"><label for="star2" class="star">?</label>
+                    <input type="radio" name="rating" value="3" id="star3"><label for="star3" class="star">?</label>
+                    <input type="radio" name="rating" value="4" id="star4"><label for="star4" class="star">?</label>
+                    <input type="radio" name="rating" value="5" id="star5"><label for="star5" class="star">?</label>
+                </div>
 
-            {% csrf_token %}
-            <label for="rating">Оцінка товару:</label>
-            <div class="rating-stars">
-                <input type="radio" name="rating" value="1" id="star1"><label for="star1" class="star">★</label>
-                <input type="radio" name="rating" value="2" id="star2"><label for="star2" class="star">★</label>
-                <input type="radio" name="rating" value="3" id="star3"><label for="star3" class="star">★</label>
-                <input type="radio" name="rating" value="4" id="star4"><label for="star4" class="star">★</label>
-                <input type="radio" name="rating" value="5" id="star5"><label for="star5" class="star">★</label>
-            </div>
+                <label for="text">Ваш відгук:</label>
+                <textarea id="text" name="text" rows="4" cols="50" required></textarea>
 
-            <label for="text">Ваш відгук:</label>
-            <textarea id="text" name="text" rows="4" cols="50" required></textarea>
-            
-            <label for="user">Ваш email або ім'я:</label>
-            <textarea id="user" name="user" rows="2" required placeholder="Ваш email або ім'я"></textarea>
-
-            <input type="submit" value="Надіслати відгук">
-        </form>
+                <input type="submit" value="Надіслати відгук">
+            </form>
+        {% else %}
+            <p>Щоб залишити відгук, спочатку <a href="{% url 'account_login' %}?next={{ request.path }}">увійдіть</a>.</p>
+        {% endif %}
     </div>
 
-    <div class="product-reviews">
+<div class="product-reviews">
         <h3>Відгуки:</h3>
         <ul>
             {% if reviews %}
@@ -111,7 +111,7 @@
                                 ★
                             {% endfor %}
                         </p>
-                        <p class="author">{{ review.user }}</p>
+                        <p class="author">{{ review.user.get_username }}</p>
                         <p>{{ review.text }}</p>
                     </li>
                 {% endfor %}
