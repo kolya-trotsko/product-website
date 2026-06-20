@@ -1,9 +1,11 @@
 from django.core.paginator import Paginator
-from django.shortcuts import render, redirect
-from company_info.models import CompanyInfo
-from .models import AirConditioner, Review, ConditionerOrder, Color
-from .forms import ReviewForm
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
 from django.contrib import messages
+from company_info.models import CompanyInfo
+from .models import AirConditioner, Review
+from .forms import ReviewForm, ConditionerOrderForm
+from ks_klimat_kh.rate_limit import is_rate_limited
 
 
 def catalog(request):
@@ -38,44 +40,38 @@ def catalog(request):
 
 
 def conditioner_detail(request, conditioner_id):
-    conditioner = AirConditioner.objects.get(id=conditioner_id)
+    conditioner = get_object_or_404(AirConditioner, id=conditioner_id)
     contacts = CompanyInfo.objects.first()
     reviews = Review.objects.filter(conditioner_id=conditioner_id)
 
     if request.method == 'POST':
-        name = request.POST.get('name')
-        phone = request.POST.get('phone')
-        address = request.POST.get('address')
-        color_id = request.POST.get('color')
+        if is_rate_limited(request, "conditioner_order"):
+            return HttpResponse(status=429)
+        form = ConditionerOrderForm(request.POST, conditioner=conditioner)
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.conditioner = conditioner
+            order.save()
+            return redirect('conditioner_detail', conditioner_id=conditioner_id)
 
-        color = Color.objects.get(id=color_id)
-
-        ConditionerOrder.objects.create(
-            name=name, 
-            phone=phone, 
-            address=address,
-            conditioner=conditioner,
-            color=color
-            )
-    
     return render(request, 'catalog/conditioner_detail.html', {
-        'conditioner': conditioner, 
+        'conditioner': conditioner,
         'contacts': contacts,
         'reviews': reviews,
-        })
+    })
 
 
 def add_review(request, conditioner_id):
-    conditioner = AirConditioner.objects.get(id=conditioner_id)
+    conditioner = get_object_or_404(AirConditioner, id=conditioner_id)
 
     if request.method == 'POST':
+        if is_rate_limited(request, "review"):
+            return HttpResponse(status=429)
         form = ReviewForm(request.POST)
         if form.is_valid():
             review = form.save(commit=False)
             review.conditioner = conditioner
-            user = request.POST.get('user')
-            review.user = user
             review.save()
-            messages.success(request, 'Ваш відгук було успішно додано!')
-            
+            messages.success(request, 'Review submitted.')
+
     return redirect('conditioner_detail', conditioner_id=conditioner_id)
