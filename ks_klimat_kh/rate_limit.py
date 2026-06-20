@@ -3,8 +3,9 @@ from django.core.cache import cache
 
 
 def _client_ip(request):
+    use_forwarded = getattr(settings, "USE_X_FORWARDED_FOR", False)
     forwarded = request.META.get("HTTP_X_FORWARDED_FOR")
-    if forwarded:
+    if use_forwarded and forwarded:
         return forwarded.split(",")[0].strip()
     return request.META.get("REMOTE_ADDR", "unknown")
 

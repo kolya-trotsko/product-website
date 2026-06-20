@@ -32,9 +32,13 @@ def env_list(name, default):
     return [item.strip() for item in value.split(",") if item.strip()]
 
 
-SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-3jcq!644v=0py*t-h_(&gp6l4o%8^&2o0$!lib!r=ynpj$^2q+")
-
 DEBUG = env_bool("DEBUG", "True")
+SECRET_KEY = os.getenv("SECRET_KEY", "")
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = "dev-insecure-secret-key-change-me"
+    else:
+        raise RuntimeError("SECRET_KEY environment variable must be set when DEBUG is False.")
 
 ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", [
     "127.0.0.1",
@@ -88,6 +92,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -95,7 +100,6 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'ks_klimat_kh.urls'
@@ -229,6 +233,16 @@ RATE_LIMITS = {
     "service_order": {"limit": 5, "window": 60},
     "home_order": {"limit": 5, "window": 60},
 }
+
+USE_X_FORWARDED_FOR = env_bool("USE_X_FORWARDED_FOR", "False")
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = env_bool("SECURE_SSL_REDIRECT", "True")
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "31536000"))
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = env_bool("SECURE_HSTS_INCLUDE_SUBDOMAINS", "True")
+    SECURE_HSTS_PRELOAD = env_bool("SECURE_HSTS_PRELOAD", "True")
 
 
 # Default primary key field type
