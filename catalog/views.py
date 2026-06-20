@@ -7,6 +7,7 @@ from company_info.models import CompanyInfo
 from .models import AirConditioner, Review
 from .forms import ReviewForm, ConditionerOrderForm
 from ks_klimat_kh.rate_limit import is_rate_limited
+from ks_klimat_kh.telegram_notify import notify_conditioner_order
 
 
 def _request_ip(request):
@@ -69,6 +70,7 @@ def conditioner_detail(request, conditioner_id):
             order.source_page = request.path
             order.client_ip = _request_ip(request)
             order.save()
+            notify_conditioner_order(order, request.path)
             return redirect('conditioner_detail', conditioner_id=conditioner_id)
 
     return render(request, 'catalog/conditioner_detail.html', {

@@ -6,6 +6,7 @@ from catalog.models import Company
 from .models import Order, ServiceOrder
 from .forms import OrderForm, ServiceOrderForm
 from ks_klimat_kh.rate_limit import is_rate_limited
+from ks_klimat_kh.telegram_notify import notify_home_order, notify_service_order
 
 
 def _request_ip(request):
@@ -23,7 +24,7 @@ def service(request):
             return HttpResponse(status=429)
         form = ServiceOrderForm(request.POST, service_choices=service_choices)
         if form.is_valid():
-            ServiceOrder.objects.create(
+            order = ServiceOrder.objects.create(
                 name=form.cleaned_data["name"],
                 phone=form.cleaned_data["phone"],
                 place=", ".join(form.cleaned_data["services"]),
@@ -31,6 +32,7 @@ def service(request):
                 source_page=request.path,
                 client_ip=_request_ip(request),
             )
+            notify_service_order(order, request.path)
             return redirect('service')
         
     return render(request, 'service/service.html', {
@@ -51,13 +53,14 @@ def home(request):
             return HttpResponse(status=429)
         form = OrderForm(request.POST)
         if form.is_valid():
-            Order.objects.create(
+            order = Order.objects.create(
                 name=form.cleaned_data["name"],
                 phone=form.cleaned_data["phone"],
                 place=form.cleaned_data["option"],
                 source_page=request.path,
                 client_ip=_request_ip(request),
             )
+            notify_home_order(order, request.path)
             return redirect('home')
     
     return render(request, 'home/home.html', {
