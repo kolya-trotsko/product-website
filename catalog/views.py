@@ -9,6 +9,10 @@ from .forms import ReviewForm, ConditionerOrderForm
 from ks_klimat_kh.rate_limit import is_rate_limited
 
 
+def _request_ip(request):
+    return request.META.get("REMOTE_ADDR", "")
+
+
 def catalog(request):
     contacts = CompanyInfo.objects.first()
     search_query = request.GET.get('query', '')
@@ -62,6 +66,8 @@ def conditioner_detail(request, conditioner_id):
         if order_form.is_valid():
             order = order_form.save(commit=False)
             order.conditioner = conditioner
+            order.source_page = request.path
+            order.client_ip = _request_ip(request)
             order.save()
             return redirect('conditioner_detail', conditioner_id=conditioner_id)
 

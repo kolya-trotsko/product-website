@@ -8,6 +8,10 @@ from .forms import OrderForm, ServiceOrderForm
 from ks_klimat_kh.rate_limit import is_rate_limited
 
 
+def _request_ip(request):
+    return request.META.get("REMOTE_ADDR", "")
+
+
 def service(request):
     contacts = CompanyInfo.objects.first()
     services = AirConditioningService.objects.all()
@@ -24,6 +28,8 @@ def service(request):
                 phone=form.cleaned_data["phone"],
                 place=", ".join(form.cleaned_data["services"]),
                 address=form.cleaned_data["address"],
+                source_page=request.path,
+                client_ip=_request_ip(request),
             )
             return redirect('service')
         
@@ -49,6 +55,8 @@ def home(request):
                 name=form.cleaned_data["name"],
                 phone=form.cleaned_data["phone"],
                 place=form.cleaned_data["option"],
+                source_page=request.path,
+                client_ip=_request_ip(request),
             )
             return redirect('home')
     
