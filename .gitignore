@@ -4,3 +4,4 @@ db.sqlite3
 .env
 secrets/
 client_secret_*.json
+.tmp/
