@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/auth.css' %}">
+</head>
+
+<div class="auth-page">
+    <div class="auth-card auth-card--center">
+        <h2>Sign out</h2>
+        <p class="auth-description">Are you sure you want to sign out?</p>
+
+        <form method="post" action="{% url 'account_logout' %}">
+            {% csrf_token %}
+            <div class="auth-actions">
+                <button type="submit">Sign out</button>
+                <a class="auth-secondary" href="{% url 'home' %}">Stay signed in</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

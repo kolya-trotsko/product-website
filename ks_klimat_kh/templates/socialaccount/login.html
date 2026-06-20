@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+{% load socialaccount %}
+
+{% block content %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/auth.css' %}">
+</head>
+
+<div class="auth-page">
+    <div class="auth-card">
+        <h2>Continue with {{ provider.name }}</h2>
+        <p class="auth-description">
+            We will redirect you to {{ provider.name }} to complete the sign-in.
+        </p>
+
+        <form method="post" action="{% provider_login_url provider.id %}">
+            {% csrf_token %}
+            {% if next %}
+                <input type="hidden" name="next" value="{{ next }}">
+            {% endif %}
+            <div class="auth-actions">
+                <button type="submit">Continue with {{ provider.name }}</button>
+                <a class="auth-secondary" href="{% url 'account_login' %}">Back to sign in</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
