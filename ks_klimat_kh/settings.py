@@ -20,17 +20,26 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3jcq!644v=0py*t-h_(&gp6l4o%8^&2o0$!lib!r=ynpj$^2q+'
+def env_bool(name, default="False"):
+    return os.getenv(name, default).lower() in ("1", "true", "yes", "on")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = [
+def env_list(name, default):
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return [item.strip() for item in value.split(",") if item.strip()]
+
+
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-3jcq!644v=0py*t-h_(&gp6l4o%8^&2o0$!lib!r=ynpj$^2q+")
+
+DEBUG = env_bool("DEBUG", "True")
+
+ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", [
     "127.0.0.1",
     "localhost",
     "192.168.1.14",
-]
+])
 
 APPS = [    
     'catalog',
@@ -85,10 +94,20 @@ WSGI_APPLICATION = 'ks_klimat_kh.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+DB_ENGINE = os.getenv("DB_ENGINE", "django.db.backends.sqlite3")
+if DB_ENGINE == "django.db.backends.sqlite3":
+    DB_NAME = os.getenv("DB_NAME", str(BASE_DIR / "db.sqlite3"))
+else:
+    DB_NAME = os.getenv("DB_NAME", "")
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': DB_ENGINE,
+        'NAME': DB_NAME,
+        'USER': os.getenv("DB_USER", ""),
+        'PASSWORD': os.getenv("DB_PASSWORD", ""),
+        'HOST': os.getenv("DB_HOST", ""),
+        'PORT': os.getenv("DB_PORT", ""),
     }
 }
 
@@ -137,6 +156,14 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+EMAIL_HOST = os.getenv("EMAIL_HOST", "")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_TLS = env_bool("EMAIL_USE_TLS", "True")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "no-reply@localhost")
 
 RATE_LIMITS = {
     "review": {"limit": 3, "window": 60},
