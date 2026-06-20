@@ -16,7 +16,13 @@ def catalog(request):
     company_filter = request.GET.get('company', '')
     page_number = request.GET.get('page', 1)
 
-    conditioners = AirConditioner.objects.filter(name__icontains=search_query).order_by('name')
+    conditioners = (
+        AirConditioner.objects
+        .select_related("company")
+        .prefetch_related("colors")
+        .filter(name__icontains=search_query)
+        .order_by('name')
+    )
 
     if color_filter:
         conditioners = conditioners.filter(colors__name=color_filter)
@@ -41,9 +47,12 @@ def catalog(request):
 
 
 def conditioner_detail(request, conditioner_id):
-    conditioner = get_object_or_404(AirConditioner, id=conditioner_id)
+    conditioner = get_object_or_404(
+        AirConditioner.objects.select_related("company").prefetch_related("colors"),
+        id=conditioner_id,
+    )
     contacts = CompanyInfo.objects.first()
-    reviews = Review.objects.filter(conditioner_id=conditioner_id)
+    reviews = Review.objects.select_related("user").filter(conditioner_id=conditioner_id)
     order_form = ConditionerOrderForm(conditioner=conditioner)
 
     if request.method == 'POST':

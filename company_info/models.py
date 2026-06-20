@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 
 class CompanyInfo(models.Model):
@@ -11,7 +12,7 @@ class CompanyInfo(models.Model):
 
     def save(self, *args, **kwargs):
         if CompanyInfo.objects.exists() and not self.pk:
-            raise Exception("Може існувати лише один запис CompanyInfo")
+            raise ValidationError("Може існувати лише один запис CompanyInfo")
         super(CompanyInfo, self).save(*args, **kwargs)
 
     def __str__(self):

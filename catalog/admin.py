@@ -34,8 +34,8 @@ class AirConditionerAdmin(admin.ModelAdmin):
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ("conditioner", "user", "rating")
     list_filter = ("rating", "conditioner")
-    search_fields = ("user", "conditioner__name")
-    list_select_related = ("conditioner",)
+    search_fields = ("user__username", "user__email", "conditioner__name")
+    list_select_related = ("conditioner", "user")
 
 
 @admin.register(ConditionerOrder)
