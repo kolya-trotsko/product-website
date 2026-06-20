@@ -1,0 +1,25 @@
+{% extends "admin/index.html" %}
+{% load i18n admin_dashboard %}
+
+{% block content %}
+    {% get_order_dashboard as dashboard %}
+    <div class="admin-cards">
+        <a class="admin-card" href="{% url 'admin:service_order_changelist' %}?status__exact=new">
+            <div class="admin-card-label">New Orders</div>
+            <div class="admin-card-value">{{ dashboard.new_count }}</div>
+        </a>
+        <a class="admin-card" href="{% url 'admin:service_order_changelist' %}?status__exact=in_progress">
+            <div class="admin-card-label">In Progress</div>
+            <div class="admin-card-value">{{ dashboard.in_progress_count }}</div>
+        </a>
+        <a class="admin-card" href="{% url 'admin:service_order_changelist' %}?assignment=unassigned">
+            <div class="admin-card-label">Unassigned</div>
+            <div class="admin-card-value">{{ dashboard.unassigned_count }}</div>
+        </a>
+        <a class="admin-card" href="{% url 'admin:service_order_changelist' %}?freshness=stale">
+            <div class="admin-card-label">Stale 24h+</div>
+            <div class="admin-card-value">{{ dashboard.stale_count }}</div>
+        </a>
+    </div>
+    {{ block.super }}
+{% endblock %}
