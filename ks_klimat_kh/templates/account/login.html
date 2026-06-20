@@ -38,9 +38,10 @@
             <span>або</span>
         </div>
 
-        <a class="google-button" href="{% provider_login_url 'google' %}">
-            Увійти через Google
-        </a>
+        <form method="post" action="{% provider_login_url 'google' %}">
+            {% csrf_token %}
+            <button class="google-button" type="submit">Увійти через Google</button>
+        </form>
 
         <p class="auth-alt">Ще немає акаунта? <a href="{% url 'account_signup' %}">Зареєструватися</a></p>
     </div>

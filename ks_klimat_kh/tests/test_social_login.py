@@ -23,13 +23,13 @@ from unittest import skipIf
 )
 class GoogleLoginUrlTests(TestCase):
     def test_google_login_url_includes_client_id(self):
-        response = self.client.get(reverse("google_login"), HTTP_HOST="localhost:8000")
+        response = self.client.post(reverse("google_login"), HTTP_HOST="localhost:8000")
         self.assertEqual(response.status_code, 302)
         query = parse_qs(urlparse(response["Location"]).query)
         self.assertEqual(query.get("client_id"), ["test-client-id"])
 
     def test_google_login_url_uses_request_host_for_redirect(self):
-        response = self.client.get(reverse("google_login"), HTTP_HOST="localhost:8000")
+        response = self.client.post(reverse("google_login"), HTTP_HOST="localhost:8000")
         self.assertEqual(response.status_code, 302)
         query = parse_qs(urlparse(response["Location"]).query)
         self.assertEqual(
