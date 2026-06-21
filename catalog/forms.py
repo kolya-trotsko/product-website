@@ -21,8 +21,6 @@ class ReviewForm(forms.ModelForm):
 
     def clean_text(self):
         text = (self.cleaned_data.get('text') or "").strip()
-        if len(text) < 10:
-            raise forms.ValidationError("Review is too short.")
         return text
 
 
