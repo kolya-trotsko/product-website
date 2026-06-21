@@ -9,68 +9,104 @@
 {% block viber_link %}{{ contacts.viber_link }}{% endblock %}
 
 {% block extra_head %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/catalog.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/catalog.css' %}?v=20260621b">
 {% endblock %}
 
 {% block content %}
-    <h1>Порівняння кондиціонерів</h1>
-    {% if conditioners %}
-        <div class="compare-table-wrap">
-            <table class="compare-table">
-                <tr>
-                    <th>Параметр</th>
-                    {% for c in conditioners %}
-                        <th>{{ c.name }}</th>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>Фото</td>
-                    {% for c in conditioners %}
-                        <td><img src="{{ c.photo.url }}" alt="{{ c.name }}" class="compare-image"></td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <td>Ціна</td>
-                    {% for c in conditioners %}<td>{{ c.price }} грн</td>{% endfor %}
-                </tr>
-                <tr>
-                    <td>Виробник</td>
-                    {% for c in conditioners %}<td>{{ c.company.name }}</td>{% endfor %}
-                </tr>
-                <tr>
-                    <td>Тип</td>
-                    {% for c in conditioners %}<td>{{ c.get_conditioner_type_display }}</td>{% endfor %}
-                </tr>
-                <tr>
-                    <td>Площа</td>
-                    {% for c in conditioners %}<td>до {{ c.recommended_area_m2 }} м²</td>{% endfor %}
-                </tr>
-                <tr>
-                    <td>Потужність</td>
-                    {% for c in conditioners %}<td>{% if c.power_btu %}{{ c.power_btu }} BTU{% else %}-{% endif %}</td>{% endfor %}
-                </tr>
-                <tr>
-                    <td>Енергоефективність</td>
-                    {% for c in conditioners %}<td>{{ c.energy_class|default:"-" }}</td>{% endfor %}
-                </tr>
-                <tr>
-                    <td>Країна</td>
-                    {% for c in conditioners %}<td>{{ c.country|default:"-" }}</td>{% endfor %}
-                </tr>
-                <tr>
-                    <td>Гарантія</td>
-                    {% for c in conditioners %}<td>{{ c.warranty_months }} міс.</td>{% endfor %}
-                </tr>
-                <tr>
-                    <td>Наявність</td>
-                    {% for c in conditioners %}
-                        <td>{% if c.is_in_stock %}В наявності{% else %}Немає{% endif %}</td>
-                    {% endfor %}
-                </tr>
-            </table>
-        </div>
-    {% else %}
-        <p>Не обрано моделей для порівняння.</p>
-    {% endif %}
-    <a class="reset-link" href="{% url 'catalog' %}">Повернутися до каталогу</a>
+    <div class="compare-page">
+        <a class="compare-back" href="{% url 'catalog' %}">
+            <span aria-hidden="true">←</span>
+            Повернутися до каталогу
+        </a>
+
+        <h1>Порівняння кондиціонерів</h1>
+        {% if conditioners %}
+            <div class="compare-product-grid compare-product-count-{{ conditioners|length }}">
+                {% for c in conditioners %}
+                    <article class="compare-product-card">
+                        <a class="compare-remove" href="{{ c.compare_remove_url }}" aria-label="Прибрати {{ c.name }}">×</a>
+                        <h2>{{ c.name }}</h2>
+                        <a class="compare-product-image" href="{% url 'conditioner_detail' c.id %}">
+                            {% if c.photo %}
+                                <img src="{{ c.photo.url }}" alt="{{ c.name }}" loading="lazy" decoding="async">
+                            {% else %}
+                                <span class="conditioner-image-placeholder">Фото очікується</span>
+                            {% endif %}
+                        </a>
+                        <span class="compare-type-badge">{{ c.get_conditioner_type_display }}</span>
+                        <p class="compare-product-price">{% if c.primary_price %}{{ c.primary_price }} {{ c.primary_currency }}{% else %}Ціну уточнюйте{% endif %}</p>
+                        <span class="compare-stock-badge {% if c.is_in_stock %}is-stock{% else %}is-out{% endif %}">
+                            {% if c.is_in_stock %}✓ В наявності{% else %}Немає в наявності{% endif %}
+                        </span>
+                        <a class="compare-detail-link" href="{% url 'conditioner_detail' c.id %}">Детальніше</a>
+                    </article>
+                {% endfor %}
+            </div>
+
+            <h2 class="compare-section-title">Характеристики</h2>
+            <div class="compare-table-wrap">
+                <table class="compare-table">
+                    <thead>
+                        <tr>
+                            <th>Параметр</th>
+                            {% for c in conditioners %}
+                                <th>{{ c.name }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><svg class="compare-param-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7h8"></path><path d="M8 12h6"></path><path d="M8 17h8"></path></svg>Ціна</td>
+                            {% for c in conditioners %}<td class="compare-price-cell">{% if c.primary_price %}{{ c.primary_price }} {{ c.primary_currency }}{% else %}-{% endif %}</td>{% endfor %}
+                        </tr>
+                        <tr>
+                            <td><svg class="compare-param-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V9l6 4V9l6 4V5h4v16H4z"></path><path d="M8 17h1"></path><path d="M13 17h1"></path><path d="M18 17h1"></path></svg>Виробник</td>
+                            {% for c in conditioners %}<td>{{ c.brand.name }}</td>{% endfor %}
+                        </tr>
+                        <tr>
+                            <td><svg class="compare-param-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="8" width="16" height="8" rx="2"></rect><path d="M7 19h10"></path></svg>Тип</td>
+                            {% for c in conditioners %}<td>{{ c.get_conditioner_type_display }}</td>{% endfor %}
+                        </tr>
+                        <tr>
+                            <td><svg class="compare-param-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3v18"></path><path d="M5 6l3-3 3 3"></path><path d="M5 18l3 3 3-3"></path><path d="M16 5h3"></path><path d="M16 12h3"></path><path d="M16 19h3"></path></svg>Площа</td>
+                            {% for c in conditioners %}<td>{% if c.recommended_area_m2 %}до {{ c.recommended_area_m2 }} м²{% else %}-{% endif %}</td>{% endfor %}
+                        </tr>
+                        <tr>
+                            <td><svg class="compare-param-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 10-13h-7l0-7z"></path></svg>Потужність</td>
+                            {% for c in conditioners %}<td>{% if c.power_btu %}{{ c.power_btu }} BTU{% else %}-{% endif %}</td>{% endfor %}
+                        </tr>
+                        <tr>
+                            <td><svg class="compare-param-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4c-7 0-12 4-12 10 0 3 2 5 5 5 6 0 8-8 7-15z"></path><path d="M4 20c3-5 6-8 12-10"></path></svg>Енергоефективність</td>
+                            {% for c in conditioners %}<td>{{ c.energy_class|default:"-" }}</td>{% endfor %}
+                        </tr>
+                        <tr>
+                            <td><svg class="compare-param-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c2.5 2.7 2.5 15.3 0 18"></path><path d="M12 3c-2.5 2.7-2.5 15.3 0 18"></path></svg>Країна</td>
+                            {% for c in conditioners %}<td>{{ c.country|default:"-" }}</td>{% endfor %}
+                        </tr>
+                        <tr>
+                            <td><svg class="compare-param-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.4-2.8 8.2-7 10-4.2-1.8-7-5.6-7-10V6l7-3z"></path><path d="M9 12l2 2 4-4"></path></svg>Гарантія</td>
+                            {% for c in conditioners %}<td>{{ c.warranty_months }} міс.</td>{% endfor %}
+                        </tr>
+                        <tr>
+                            <td><svg class="compare-param-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v10H4z"></path><path d="M8 11h8"></path><path d="M8 14h5"></path></svg>Наявність</td>
+                            {% for c in conditioners %}
+                                <td>
+                                    <span class="compare-stock-badge {% if c.is_in_stock %}is-stock{% else %}is-out{% endif %}">
+                                        {% if c.is_in_stock %}В наявності{% else %}Немає{% endif %}
+                                    </span>
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="compare-note">
+                <span aria-hidden="true">i</span>
+                Характеристики можуть відрізнятися залежно від партії та модифікації.
+            </p>
+        {% else %}
+            <p class="compare-empty">Не обрано моделей для порівняння.</p>
+        {% endif %}
+    </div>
 {% endblock %}

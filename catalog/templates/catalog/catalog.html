@@ -9,7 +9,7 @@
 {% block viber_link %}{{ contacts.viber_link }}{% endblock %}
 
 {% block extra_head %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/catalog.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/catalog.css' %}?v=20260621">
     <script src="{% static 'js/catalog.js' %}"></script>
 {% endblock %}
 
@@ -17,41 +17,128 @@
     <h1>Каталог кондиціонерів у Харкові</h1>
 
     <form method="get" action="{% url 'catalog' %}" class="catalog-filters">
-        <input type="text" name="query" value="{{ search_query }}" placeholder="Пошук моделі...">
+        <div class="filter-heading">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M4 5h16l-6 7v5l-4 2v-7L4 5z"></path>
+            </svg>
+            <span>Фільтри</span>
+        </div>
 
-        <select name="color" class="color-filter">
-            <option value="">Колір</option>
-            {% for color in colors %}
-                <option value="{{ color }}" {% if color_filter == color %}selected{% endif %}>{{ color }}</option>
-            {% endfor %}
-        </select>
+        <label class="filter-control filter-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="M16.5 16.5L21 21"></path>
+            </svg>
+            <span class="sr-only">Пошук моделі</span>
+            <input type="text" name="query" value="{{ search_query }}" placeholder="Пошук моделі...">
+        </label>
 
-        <select name="company" class="company-filter">
-            <option value="">Виробник</option>
-            {% for company in companies %}
-                <option value="{{ company }}" {% if company_filter == company %}selected{% endif %}>{{ company }}</option>
-            {% endfor %}
-        </select>
+        <label class="filter-control">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="7" cy="7" r="2"></circle>
+                <circle cx="15" cy="7" r="2"></circle>
+                <circle cx="11" cy="15" r="2"></circle>
+                <path d="M5 19h14"></path>
+            </svg>
+            <span class="sr-only">Колір</span>
+            <select name="color" class="color-filter">
+                <option value="">Колір</option>
+                {% for color in colors %}
+                    <option value="{{ color }}" {% if color_filter == color %}selected{% endif %}>{{ color }}</option>
+                {% endfor %}
+            </select>
+        </label>
 
-        <select name="type" class="type-filter">
-            <option value="">Тип</option>
-            {% for value, label in type_choices %}
-                <option value="{{ value }}" {% if type_filter == value %}selected{% endif %}>{{ label }}</option>
-            {% endfor %}
-        </select>
+        <label class="filter-control">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M4 21V9l6 4V9l6 4V5h4v16H4z"></path>
+                <path d="M8 17h1"></path>
+                <path d="M13 17h1"></path>
+                <path d="M18 17h1"></path>
+            </svg>
+            <span class="sr-only">Виробник</span>
+            <select name="company" class="company-filter">
+                <option value="">Виробник</option>
+                {% for company in companies %}
+                    <option value="{{ company }}" {% if company_filter == company %}selected{% endif %}>{{ company }}</option>
+                {% endfor %}
+            </select>
+        </label>
 
-        <select name="stock" class="stock-filter">
-            <option value="">Наявність</option>
-            <option value="in_stock" {% if stock_filter == 'in_stock' %}selected{% endif %}>В наявності</option>
-            <option value="out_of_stock" {% if stock_filter == 'out_of_stock' %}selected{% endif %}>Немає в наявності</option>
-        </select>
+        <label class="filter-control">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <rect x="4" y="4" width="6" height="6" rx="1"></rect>
+                <rect x="14" y="4" width="6" height="6" rx="1"></rect>
+                <rect x="4" y="14" width="6" height="6" rx="1"></rect>
+                <path d="M14 17h6"></path>
+            </svg>
+            <span class="sr-only">Тип</span>
+            <select name="type" class="type-filter">
+                <option value="">Тип</option>
+                {% for value, label in type_choices %}
+                    <option value="{{ value }}" {% if type_filter == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </label>
 
-        <input type="number" min="0" name="area_min" value="{{ area_min }}" placeholder="Площа від, м²">
-        <input type="number" min="0" name="area_max" value="{{ area_max }}" placeholder="Площа до, м²">
-        <input type="number" min="0" name="warranty_min" value="{{ warranty_min }}" placeholder="Гарантія від, міс.">
+        <label class="filter-control">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <rect x="4" y="6" width="16" height="12" rx="2"></rect>
+            </svg>
+            <span class="sr-only">Наявність</span>
+            <select name="stock" class="stock-filter">
+                <option value="">Наявність</option>
+                <option value="in_stock" {% if stock_filter == 'in_stock' %}selected{% endif %}>В наявності</option>
+                <option value="out_of_stock" {% if stock_filter == 'out_of_stock' %}selected{% endif %}>Немає в наявності</option>
+            </select>
+        </label>
 
-        <button type="submit">Фільтрувати</button>
-        <a class="reset-link" href="{% url 'catalog' %}">Скинути</a>
+        <div class="filter-range">
+            <span class="filter-range-title">Площа приміщення, м²</span>
+            <div class="filter-range-inputs">
+                <label>
+                    <span class="sr-only">Площа від</span>
+                    <input type="number" min="0" name="area_min" value="{{ area_min }}" placeholder="від">
+                </label>
+                <span class="range-separator">—</span>
+                <label>
+                    <span class="sr-only">Площа до</span>
+                    <input type="number" min="0" name="area_max" value="{{ area_max }}" placeholder="до">
+                </label>
+            </div>
+        </div>
+
+        <label class="filter-control">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 3l7 3v5c0 4.4-2.8 8.2-7 10-4.2-1.8-7-5.6-7-10V6l7-3z"></path>
+                <path d="M9 12l2 2 4-4"></path>
+            </svg>
+            <span class="sr-only">Гарантія від</span>
+            <select name="warranty_min" class="warranty-filter">
+                <option value="">Гарантія від, міс.</option>
+                <option value="12" {% if warranty_min == '12' %}selected{% endif %}>від 12 міс.</option>
+                <option value="24" {% if warranty_min == '24' %}selected{% endif %}>від 24 міс.</option>
+                <option value="36" {% if warranty_min == '36' %}selected{% endif %}>від 36 міс.</option>
+                <option value="60" {% if warranty_min == '60' %}selected{% endif %}>від 60 міс.</option>
+            </select>
+        </label>
+
+        <div class="filter-actions">
+            <button type="submit" class="filter-submit">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="M16.5 16.5L21 21"></path>
+                </svg>
+                Показати товари
+            </button>
+            <a class="reset-link" href="{% url 'catalog' %}">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M20 12a8 8 0 1 1-2.3-5.7"></path>
+                    <path d="M20 4v6h-6"></path>
+                </svg>
+                Скинути
+            </a>
+        </div>
     </form>
 
     <form method="get" action="{% url 'compare_conditioners' %}" class="compare-form">
@@ -68,12 +155,18 @@
                         Порівняти
                     </label>
 
-                    <img src="{{ conditioner.photo.url }}" alt="{{ conditioner.name }}" class="conditioner-image" loading="lazy" decoding="async">
+                    <a href="{% url 'conditioner_detail' conditioner.id %}" class="conditioner-image-link" aria-label="{{ conditioner.name }}">
+                        {% if conditioner.photo %}
+                            <img src="{{ conditioner.photo.url }}" alt="{{ conditioner.name }}" class="conditioner-image" loading="lazy" decoding="async">
+                        {% else %}
+                            <span class="conditioner-image-placeholder">Фото очікується</span>
+                        {% endif %}
+                    </a>
                     <h2><a href="{% url 'conditioner_detail' conditioner.id %}">{{ conditioner.name }}</a></h2>
-                    <p>Ціна: {{ conditioner.price }} грн</p>
-                    <p>Виробник: {{ conditioner.company.name }}</p>
-                    <p>Тип: {{ conditioner.get_conditioner_type_display }}</p>
-                    <p>Площа: до {{ conditioner.recommended_area_m2 }} м²</p>
+                    <p class="conditioner-subtitle">{{ conditioner.get_conditioner_type_display }} кондиціонер</p>
+                    <p class="conditioner-price">Ціна: {% if conditioner.primary_price %}{{ conditioner.primary_price }} {{ conditioner.primary_currency }}{% else %}уточнюйте{% endif %}</p>
+                    <p>Виробник: {{ conditioner.brand.name }}</p>
+                    <p>Площа: {% if conditioner.recommended_area_m2 %}до {{ conditioner.recommended_area_m2 }} м²{% else %}уточнюйте{% endif %}</p>
                     <p>Гарантія: {{ conditioner.warranty_months }} міс.</p>
                     <p class="stock {% if conditioner.is_in_stock %}in-stock{% else %}out-of-stock{% endif %}">
                         {% if conditioner.is_in_stock %}В наявності{% else %}Немає в наявності{% endif %}
