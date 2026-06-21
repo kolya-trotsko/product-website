@@ -56,61 +56,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    const sliderContainer = document.getElementById('slider-container');
-    const reviews = document.querySelectorAll('.customer-review');
-    let currentReview = 1;
-    reviews.forEach(review => {
-        review.style.display = '';
-    });
-
-    function showReview(reviewNumber) {
-        if (!reviews.length) {
-            return;
-        }
-
-        reviews.forEach(review => review.classList.remove('is-active'));
-
-        const newReviewElement = document.getElementById(`review${reviewNumber}`);
-        if (newReviewElement) {
-            newReviewElement.classList.add('is-active');
-            currentReview = reviewNumber;
-        }
-    }
-
-    function prevReview() {
-        if (!reviews.length) {
-            return;
-        }
-
-        const prev = currentReview === 1 ? reviews.length : currentReview - 1;
-        showReview(prev);
-    }
-
-    function nextReview() {
-        if (!reviews.length) {
-            return;
-        }
-
-        const next = currentReview === reviews.length ? 1 : currentReview + 1;
-        showReview(next);
-    }
-
-    if (reviews.length) {
-        showReview(1);
-        sliderContainer && sliderContainer.classList.add('is-ready');
-    }
-
-    const prevReviewButton = document.getElementById("prevReviewButton");
-    const nextReviewButton = document.getElementById("nextReviewButton");
-
-    if (reviews.length > 1) {
-        prevReviewButton && prevReviewButton.addEventListener("click", prevReview);
-        nextReviewButton && nextReviewButton.addEventListener("click", nextReview);
-    } else {
-        prevReviewButton && (prevReviewButton.style.display = 'none');
-        nextReviewButton && (nextReviewButton.style.display = 'none');
-    }
-
     const faqItems = document.querySelectorAll('.faq-item');
 
     faqItems.forEach(faqItem => {

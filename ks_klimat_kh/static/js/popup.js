@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const showPopupButton = document.getElementById("show-popup-button");
+    const extraPopupButtons = document.querySelectorAll("[data-open-order]");
     const popupContainer = document.getElementById("popup-container");
     const closePopupButton = document.getElementById("close-popup-button");
 
@@ -16,6 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     showPopupButton.addEventListener("click", openPopup);
+    extraPopupButtons.forEach((button) => {
+        button.addEventListener("click", openPopup);
+    });
     closePopupButton.addEventListener("click", closePopup);
     popupContainer.addEventListener("click", (event) => {
         if (event.target === popupContainer) {

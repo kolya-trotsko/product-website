@@ -9,7 +9,7 @@
 {% block viber_link %} {{ contacts.viber_link }} {% endblock %}
 
 {% block extra_head %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/home/home.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home/home.css' %}?v=20260621b">
     <script src="{% static 'js/popup.js' %}"></script>
     <script src="{% static 'js/home.js' %}"></script>
 {% endblock %}
@@ -145,43 +145,84 @@
 <div class="basic-container partners-section">
     <ul class="partner-list">
         {% for company in companies %}
+            <li class="partner">
                 {% if company.logo %}
-                    <div class="partner">
-                        <img src="{{ company.logo.url }}" class="partner-logo" alt="Логотип {{ company.name }}" loading="lazy" decoding="async">
-                    </div>
+                    <img src="{{ company.logo.url }}" class="partner-logo" alt="Логотип {{ company.name }}" loading="lazy" decoding="async">
+                {% else %}
+                    <span class="partner-fallback">{{ company.name }}</span>
                 {% endif %}
+            </li>
+        {% empty %}
+            <li class="partners-empty">Марки кондиціонерів ще не додані.</li>
         {% endfor %}
     </ul>
 </div> 
 
 
-<p class="title">Чому ми?</p>
+<section class="why-us-section" aria-labelledby="why-us-title">
+    <div class="why-us-copy">
+        <p class="section-kicker">Не просто “помити кондиціонер”</p>
+        <h2 id="why-us-title">Що ви отримуєте після виїзду майстра</h2>
+        <p class="why-us-lead">
+            Цей блок має відповісти на головні питання перед замовленням: чи буде чисто вдома,
+            скільки часу займає робота, що саме ми миємо і коли потрібно платити.
+        </p>
 
-<div class="basic-container why-us-section">
-    <div class="why-us">
-        <p>Робимо свою роботу швидко і якісно. 45 хвилин і все готово!</p>
-        <p>Ми професіонали своєї справи. 10 роки досвіду роботи в цій сфері</p>
-        <p>Мойка високим тиском зовнішнього блоку</p>
-        <p>Плата за чищення після закінчення роботи</p>
-        <p>Працюємо професійною мийкою Bosch</p>
-        <p>Не бруднимо ваші меблі й стіни, використовуємо сервісний чохол (капюшон) на внутрішній блок</p>
+        <div class="why-us-grid">
+            <article class="why-us-card">
+                <span class="why-us-icon">1</span>
+                <h3>Чисто в кімнаті</h3>
+                <p>Ставимо сервісний чохол на внутрішній блок, тому вода і бруд не потрапляють на стіни, меблі та підлогу.</p>
+            </article>
+            <article class="why-us-card">
+                <span class="why-us-icon">2</span>
+                <h3>45-60 хвилин</h3>
+                <p>Стандартна чистка займає близько години. Якщо кондиціонер сильно забруднений, майстер попередить про час до початку.</p>
+            </article>
+            <article class="why-us-card">
+                <span class="why-us-icon">3</span>
+                <h3>Миємо не тільки фільтри</h3>
+                <p>Чистимо корпус, фільтри, теплообмінник, вентилятор, дренаж і за потреби зовнішній блок.</p>
+            </article>
+            <article class="why-us-card">
+                <span class="why-us-icon">4</span>
+                <h3>Професійне обладнання</h3>
+                <p>Використовуємо мийку високого тиску Bosch і сервісні засоби для безпечного очищення.</p>
+            </article>
+            <article class="why-us-card">
+                <span class="why-us-icon">5</span>
+                <h3>Оплата після роботи</h3>
+                <p>Ви оплачуєте чистку після завершення, коли бачите результат і кондиціонер перевірений у роботі.</p>
+            </article>
+            <article class="why-us-card">
+                <span class="why-us-icon">6</span>
+                <h3>10 років досвіду</h3>
+                <p>Працюємо з побутовими кондиціонерами, мульти-сплітами та зовнішніми блоками різних брендів.</p>
+            </article>
+        </div>
+
+        <button class="why-us-cta" type="button" data-open-order>Замовити чистку</button>
     </div>
 
-    <div class="customer-reviews">
-        <div id="slider-container" class="slider-container">
-            <div class="customer-review is-active" id="review1">
-                <img src="{{ MEDIA_URL }}home/photo_1.png" alt="Відгук 1" loading="lazy" decoding="async">
-            </div>
-            <div class="customer-review" id="review2">
-                <img src="{{ MEDIA_URL }}home/photo_2.png" alt="Відгук 2" loading="lazy" decoding="async">
-            </div>
-        </div>
-        <div class="slider-controls">
-            <button class="button-nav" id="prevReviewButton">Попередній</button>
-            <button class="button-nav" id="nextReviewButton">Наступний</button>
-        </div>
+    <div class="why-us-proof" aria-label="Фото процесу чистки кондиціонера">
+        <figure class="proof-photo proof-photo-large">
+            <img src="{{ MEDIA_URL }}home/4istka_s_razborom.jpg" alt="Миття внутрішнього блоку кондиціонера із сервісним чохлом" loading="lazy" decoding="async">
+            <figcaption>Захищаємо стіну і меблі сервісним чохлом</figcaption>
+        </figure>
+        <figure class="proof-photo">
+            <img src="{{ MEDIA_URL }}home/moyka-vneshnego-bloka.jpg" alt="Миття зовнішнього блоку кондиціонера" loading="lazy" decoding="async">
+            <figcaption>Миємо зовнішній блок</figcaption>
+        </figure>
+        <figure class="proof-photo">
+            <img src="{{ MEDIA_URL }}home/filtr.jpg" alt="Брудні фільтри кондиціонера перед чисткою" loading="lazy" decoding="async">
+            <figcaption>Прибираємо пил із фільтрів</figcaption>
+        </figure>
+        <figure class="proof-photo">
+            <img src="{{ MEDIA_URL }}home/uefifgga9t0_5d0a2e0c6310b.jpg" alt="Забруднений теплообмінник кондиціонера перед очищенням" loading="lazy" decoding="async">
+            <figcaption>Очищаємо теплообмінник</figcaption>
+        </figure>
     </div>
-</div>   
+</section>
 
 <p class="title">Питання-відповідь</p>
 

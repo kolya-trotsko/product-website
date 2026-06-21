@@ -51,7 +51,11 @@ def service(request):
 
 def home(request):
     contacts = CompanyInfo.objects.first()
-    companies = Company.objects.all()
+    companies = (
+        Company.objects.filter(catalog_products__isnull=False)
+        .distinct()
+        .order_by("name")
+    )
     form = OrderForm()
 
     if request.method == 'POST':
