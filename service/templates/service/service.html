@@ -27,7 +27,7 @@
 
 {% block extra_head %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/service/service.css' %}">
-    <script src="{% static 'js/popup.js' %}"></script>
+    <script src="{% static 'js/popup.js' %}?v=20260621b"></script>
 {% endblock %}
 
 {% block content %}
@@ -106,7 +106,7 @@
 
             <button type="submit" class="submit-button">Відправити</button>
         </form>
-        <button class="close-button" id="close-popup-button">Закрити</button>
+        <button class="close-button" id="close-popup-button" aria-label="Закрити форму">×</button>
     </div>
 </div>
 {% endblock %}

@@ -18,7 +18,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     showPopupButton.addEventListener("click", openPopup);
     extraPopupButtons.forEach((button) => {
-        button.addEventListener("click", openPopup);
+        button.addEventListener("click", (event) => {
+            event.preventDefault();
+            openPopup();
+        });
     });
     closePopupButton.addEventListener("click", closePopup);
     popupContainer.addEventListener("click", (event) => {

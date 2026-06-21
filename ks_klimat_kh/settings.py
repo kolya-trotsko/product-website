@@ -118,6 +118,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
                 'ks_klimat_kh.context_processors.site_metadata',
+                'ks_klimat_kh.context_processors.company_contacts',
             ],
         },
     },
