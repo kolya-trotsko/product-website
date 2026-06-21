@@ -3,7 +3,18 @@ from django.utils.html import format_html
 
 from ks_klimat_kh.admin_mixins import AssignmentFilter, FreshnessFilter, OrderWorkflowAdminMixin
 
-from .models import AirConditioner, Color, Company, ConditionerOrder, Review
+from .models import (
+    AirConditioner,
+    CatalogProduct,
+    CatalogProductComponent,
+    CatalogProductImage,
+    CatalogProductImportSource,
+    CatalogProductPrice,
+    Color,
+    Company,
+    ConditionerOrder,
+    Review,
+)
 
 
 @admin.register(Company)
@@ -16,6 +27,87 @@ class CompanyAdmin(admin.ModelAdmin):
 class ColorAdmin(admin.ModelAdmin):
     list_display = ("name", "hash")
     search_fields = ("name", "hash")
+
+
+class CatalogProductPriceInline(admin.TabularInline):
+    model = CatalogProductPrice
+    extra = 0
+    readonly_fields = ("created_at", "updated_at")
+
+
+class CatalogProductComponentInline(admin.TabularInline):
+    model = CatalogProductComponent
+    fk_name = "parent_product"
+    extra = 0
+    autocomplete_fields = ("component_product",)
+
+
+class CatalogProductImageInline(admin.TabularInline):
+    model = CatalogProductImage
+    extra = 0
+    readonly_fields = ("created_at",)
+
+
+class CatalogProductImportSourceInline(admin.TabularInline):
+    model = CatalogProductImportSource
+    extra = 0
+    readonly_fields = ("imported_at",)
+
+
+@admin.register(CatalogProduct)
+class CatalogProductAdmin(admin.ModelAdmin):
+    list_display = (
+        "name",
+        "brand",
+        "product_type",
+        "category",
+        "series",
+        "is_active",
+        "is_indexable",
+        "updated_at",
+    )
+    list_filter = ("brand", "product_type", "category", "is_active", "is_indexable")
+    search_fields = ("name", "model", "brand__name", "series", "source_key")
+    list_select_related = ("brand",)
+    readonly_fields = ("source_key", "created_at", "updated_at")
+    inlines = (
+        CatalogProductPriceInline,
+        CatalogProductComponentInline,
+        CatalogProductImageInline,
+        CatalogProductImportSourceInline,
+    )
+
+
+@admin.register(CatalogProductPrice)
+class CatalogProductPriceAdmin(admin.ModelAdmin):
+    list_display = ("product", "price_type", "currency", "amount", "source_sheet", "source_row", "is_current")
+    list_filter = ("price_type", "currency", "is_current", "source_sheet")
+    search_fields = ("product__name", "product__model", "source_sheet")
+    list_select_related = ("product",)
+
+
+@admin.register(CatalogProductComponent)
+class CatalogProductComponentAdmin(admin.ModelAdmin):
+    list_display = ("parent_product", "role", "component_product", "quantity")
+    list_filter = ("role",)
+    search_fields = ("parent_product__name", "component_product__name")
+    autocomplete_fields = ("parent_product", "component_product")
+
+
+@admin.register(CatalogProductImage)
+class CatalogProductImageAdmin(admin.ModelAdmin):
+    list_display = ("product", "source_sheet", "anchor_row", "anchor_col", "is_primary")
+    list_filter = ("is_primary", "source_sheet")
+    search_fields = ("product__name", "source_sheet")
+    list_select_related = ("product",)
+
+
+@admin.register(CatalogProductImportSource)
+class CatalogProductImportSourceAdmin(admin.ModelAdmin):
+    list_display = ("product", "source_file", "source_sheet", "source_row", "imported_at")
+    list_filter = ("source_file", "source_sheet")
+    search_fields = ("product__name", "source_file", "source_sheet", "source_hash")
+    list_select_related = ("product",)
 
 
 @admin.register(AirConditioner)
