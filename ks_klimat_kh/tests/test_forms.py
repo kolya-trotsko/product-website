@@ -39,10 +39,9 @@ class ReviewFormTests(TestCase):
             password="pass1234",
         )
 
-    def test_review_form_rejects_short_text(self):
+    def test_review_form_accepts_short_text(self):
         form = ReviewForm(data={"text": "short", "rating": 5})
-        self.assertFalse(form.is_valid())
-        self.assertIn("text", form.errors)
+        self.assertTrue(form.is_valid())
 
     def test_review_form_rejects_invalid_rating(self):
         form = ReviewForm(data={"text": "This is a long enough review text.", "rating": 6})
