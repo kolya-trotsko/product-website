@@ -10,6 +10,9 @@ from ks_klimat_kh.rate_limit import get_client_ip, is_rate_limited
 from ks_klimat_kh.seo import local_business_schema, product_schema
 from ks_klimat_kh.telegram_notify import notify_conditioner_order
 
+ORDER_ACCEPTED_MESSAGE = "Дякуємо за звернення. Наш менеджер зв’яжеться з вами найближчим часом."
+
+
 def catalog(request):
     contacts = CompanyInfo.objects.first()
     search_query = request.GET.get('query', '')
@@ -103,7 +106,7 @@ def conditioner_detail(request, conditioner_id):
             order.client_ip = get_client_ip(request)
             order.save()
             notify_conditioner_order(order, request.path)
-            messages.success(request, "Дякуємо, заявку на кондиціонер прийнято. Ми зв'яжемося з вами найближчим часом.")
+            messages.success(request, ORDER_ACCEPTED_MESSAGE, extra_tags="toast-order-accepted")
             return redirect('conditioner_detail', conditioner_id=conditioner_id)
 
     return render(request, 'catalog/conditioner_detail.html', {

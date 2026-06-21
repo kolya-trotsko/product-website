@@ -17,6 +17,8 @@
     <meta property="og:image" content="{% block og_image %}{{ seo_image|default:default_seo_image }}{% endblock %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}?v=20260620">
     <link rel="stylesheet" type="text/css" href="{% static 'css/header.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/toast.css' %}?v=20260621">
+    <script src="{% static 'js/toast.js' %}?v=20260621" defer></script>
     <link rel="icon" type="image/x-icon" href="{{ MEDIA_URL }}logos/favicon.ico">
     {% if structured_data %}
         <script type="application/ld+json">{{ structured_data|safe }}</script>
@@ -28,15 +30,29 @@
     {% block header %}
         {% include 'header.html' %}
     {% endblock %}
+
+    {% if messages %}
+        <div class="toast-region" aria-live="polite" aria-atomic="true">
+            {% for message in messages %}
+                <article
+                    class="site-toast site-toast-{{ message.level_tag|default:'info' }}"
+                    data-toast
+                    data-toast-type="{{ message.level_tag|default:'info' }}"
+                    data-toast-title="{% if 'toast-order-accepted' in message.tags %}Заявку прийнято!{% elif message.level_tag == 'success' %}Готово{% elif message.level_tag == 'warning' %}Увага{% elif message.level_tag == 'error' %}Помилка{% else %}Інформація{% endif %}"
+                    role="{% if message.level_tag == 'error' %}alert{% else %}status{% endif %}"
+                >
+                    <span class="toast-icon" aria-hidden="true"></span>
+                    <div class="toast-content">
+                        <h2 class="toast-title">{% if 'toast-order-accepted' in message.tags %}Заявку прийнято!{% elif message.level_tag == 'success' %}Готово{% elif message.level_tag == 'warning' %}Увага{% elif message.level_tag == 'error' %}Помилка{% else %}Інформація{% endif %}</h2>
+                        <p class="toast-text">{{ message }}</p>
+                    </div>
+                    <button class="toast-close" type="button" aria-label="Закрити повідомлення">×</button>
+                </article>
+            {% endfor %}
+        </div>
+    {% endif %}
     
     <main class="main-content">
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li class="message {{ message.tags }}">{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
         {% block content %}
         {% endblock %}
     </main>

@@ -10,6 +10,9 @@ from ks_klimat_kh.rate_limit import get_client_ip, is_rate_limited
 from ks_klimat_kh.seo import local_business_schema
 from ks_klimat_kh.telegram_notify import notify_home_order, notify_service_order
 
+ORDER_ACCEPTED_MESSAGE = "Дякуємо за звернення. Наш менеджер зв’яжеться з вами найближчим часом."
+
+
 def service(request):
     contacts = CompanyInfo.objects.first()
     services = AirConditioningService.objects.all()
@@ -30,7 +33,7 @@ def service(request):
                 client_ip=get_client_ip(request),
             )
             notify_service_order(order, request.path)
-            messages.success(request, "Дякуємо, заявку прийнято. Ми зв'яжемося з вами найближчим часом.")
+            messages.success(request, ORDER_ACCEPTED_MESSAGE, extra_tags="toast-order-accepted")
             return redirect('service')
         
     return render(request, 'service/service.html', {
@@ -64,7 +67,7 @@ def home(request):
                 client_ip=get_client_ip(request),
             )
             notify_home_order(order, request.path)
-            messages.success(request, "Дякуємо, заявку прийнято. Ми зв'яжемося з вами найближчим часом.")
+            messages.success(request, ORDER_ACCEPTED_MESSAGE, extra_tags="toast-order-accepted")
             return redirect('home')
     
     return render(request, 'home/home.html', {
