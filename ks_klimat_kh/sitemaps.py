@@ -1,7 +1,7 @@
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
-from catalog.models import AirConditioner
+from catalog.models import CatalogProduct
 
 
 class StaticViewSitemap(Sitemap):
@@ -15,12 +15,16 @@ class StaticViewSitemap(Sitemap):
         return reverse(item)
 
 
-class AirConditionerSitemap(Sitemap):
+class CatalogProductSitemap(Sitemap):
     changefreq = "weekly"
     priority = 0.7
 
     def items(self):
-        return AirConditioner.objects.filter(is_in_stock=True).select_related("company").order_by("id")
+        return (
+            CatalogProduct.objects.filter(is_active=True, is_indexable=True, is_in_stock=True)
+            .select_related("brand")
+            .order_by("id")
+        )
 
     def location(self, item):
         return reverse("conditioner_detail", args=[item.id])

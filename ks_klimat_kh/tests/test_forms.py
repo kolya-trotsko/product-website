@@ -2,20 +2,37 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from catalog.forms import ConditionerOrderForm, ReviewForm
-from catalog.models import AirConditioner, Color, Company
+from catalog.models import CatalogProduct, CatalogProductPrice, Color, Company
 from service.forms import OrderForm, ServiceOrderForm
+
+
+def create_catalog_product(company, name, price):
+    product = CatalogProduct.objects.create(
+        brand=company,
+        name=name,
+        model=name,
+        slug=name.lower().replace(" ", "-"),
+        source_key=f"test-{name.lower().replace(' ', '-')}",
+        category="air_conditioners",
+        product_type=CatalogProduct.TYPE_AIR_CONDITIONER,
+        main_image="catalog/air_conditioner_photos/test.png",
+        description="Test description",
+    )
+    CatalogProductPrice.objects.create(
+        product=product,
+        price_type=CatalogProductPrice.TYPE_RETAIL,
+        currency=CatalogProductPrice.CURRENCY_UAH,
+        amount=price,
+        source_sheet="test",
+        source_row=product.id,
+    )
+    return product
 
 
 class ReviewFormTests(TestCase):
     def setUp(self):
         company = Company.objects.create(name="Test Company")
-        self.conditioner = AirConditioner.objects.create(
-            name="Test AC",
-            price="1000.00",
-            photo="catalog/air_conditioner_photos/test.png",
-            description="Test description",
-            company=company,
-        )
+        self.conditioner = create_catalog_product(company, "Test AC", "1000.00")
         self.user = get_user_model().objects.create_user(
             username="reviewer",
             email="reviewer@example.com",
@@ -40,13 +57,7 @@ class ReviewFormTests(TestCase):
 class ConditionerOrderFormTests(TestCase):
     def setUp(self):
         company = Company.objects.create(name="Order Company")
-        self.conditioner = AirConditioner.objects.create(
-            name="Order AC",
-            price="1500.00",
-            photo="catalog/air_conditioner_photos/test-order.png",
-            description="Order test description",
-            company=company,
-        )
+        self.conditioner = create_catalog_product(company, "Order AC", "1500.00")
         self.allowed_color = Color.objects.create(name="White", hash="#ffffff")
         self.disallowed_color = Color.objects.create(name="Black", hash="#000000")
         self.conditioner.colors.add(self.allowed_color)

@@ -73,6 +73,7 @@ def notify_service_order(order, request_path=""):
 
 
 def notify_conditioner_order(order, request_path=""):
+    color_name = order.color.name if order.color else "-"
     text = (
         "🆕 <b>Нове замовлення (Каталог)</b>\n"
         f"ID: <code>{_e(order.id)}</code>\n"
@@ -80,7 +81,7 @@ def notify_conditioner_order(order, request_path=""):
         f"Телефон: <code>{_e(order.phone)}</code>\n"
         f"Адреса: {_e(order.address)}\n"
         f"Товар: {_e(order.conditioner.name)}\n"
-        f"Колір: {_e(order.color.name)}\n"
+        f"Колір: {_e(color_name)}\n"
         f"Сторінка: <code>{_e(request_path or order.source_page)}</code>"
     )
     send_message(text)

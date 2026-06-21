@@ -4,14 +4,14 @@ from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap
-from ks_klimat_kh.sitemaps import AirConditionerSitemap, StaticViewSitemap
+from ks_klimat_kh.sitemaps import CatalogProductSitemap, StaticViewSitemap
 from ks_klimat_kh.telegram_bot import telegram_webhook
 from ks_klimat_kh.views import robots_txt
 
 
 sitemaps = {
     "static": StaticViewSitemap,
-    "conditioners": AirConditionerSitemap,
+    "conditioners": CatalogProductSitemap,
 }
 
 

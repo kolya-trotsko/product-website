@@ -66,21 +66,24 @@ def local_business_schema(request, contacts=None):
 
 
 def product_schema(request, conditioner, reviews):
+    photo = conditioner.photo
+    price = conditioner.primary_price
+    currency = conditioner.primary_currency or "UAH"
     data = {
         "@context": "https://schema.org",
         "@type": "Product",
         "name": conditioner.name,
-        "image": absolute_url(request, conditioner.photo.url if conditioner.photo else ""),
+        "image": absolute_url(request, photo.url if photo else ""),
         "description": conditioner.description,
         "brand": {
             "@type": "Brand",
-            "name": conditioner.company.name,
+            "name": conditioner.brand.name,
         },
         "offers": {
             "@type": "Offer",
             "url": absolute_url(request, request.path),
-            "priceCurrency": "UAH",
-            "price": str(conditioner.price),
+            "priceCurrency": currency,
+            "price": str(price) if price is not None else "",
             "availability": (
                 "https://schema.org/InStock"
                 if conditioner.is_in_stock

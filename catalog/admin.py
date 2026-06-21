@@ -1,10 +1,7 @@
 from django.contrib import admin
-from django.utils.html import format_html
-
 from ks_klimat_kh.admin_mixins import AssignmentFilter, FreshnessFilter, OrderWorkflowAdminMixin
 
 from .models import (
-    AirConditioner,
     CatalogProduct,
     CatalogProductComponent,
     CatalogProductImage,
@@ -62,14 +59,18 @@ class CatalogProductAdmin(admin.ModelAdmin):
         "product_type",
         "category",
         "series",
+        "recommended_area_m2",
+        "warranty_months",
+        "is_in_stock",
         "is_active",
         "is_indexable",
         "updated_at",
     )
-    list_filter = ("brand", "product_type", "category", "is_active", "is_indexable")
-    search_fields = ("name", "model", "brand__name", "series", "source_key")
+    list_filter = ("brand", "product_type", "category", "is_in_stock", "warranty_months", "is_active", "is_indexable", "colors")
+    search_fields = ("name", "model", "brand__name", "series", "source_key", "country", "energy_class")
     list_select_related = ("brand",)
     readonly_fields = ("source_key", "created_at", "updated_at")
+    filter_horizontal = ("colors",)
     inlines = (
         CatalogProductPriceInline,
         CatalogProductComponentInline,
@@ -108,30 +109,6 @@ class CatalogProductImportSourceAdmin(admin.ModelAdmin):
     list_filter = ("source_file", "source_sheet")
     search_fields = ("product__name", "source_file", "source_sheet", "source_hash")
     list_select_related = ("product",)
-
-
-@admin.register(AirConditioner)
-class AirConditionerAdmin(admin.ModelAdmin):
-    list_display = (
-        "name",
-        "company",
-        "conditioner_type",
-        "recommended_area_m2",
-        "warranty_months",
-        "is_in_stock",
-        "price",
-        "photo_preview",
-    )
-    list_filter = ("company", "conditioner_type", "is_in_stock", "warranty_months", "colors")
-    search_fields = ("name", "company__name", "country", "energy_class")
-    list_select_related = ("company",)
-    filter_horizontal = ("colors",)
-
-    @admin.display(description="Фото")
-    def photo_preview(self, obj):
-        if not obj.photo:
-            return "Немає"
-        return format_html('<img src="{}" alt="{}" style="height:50px;"/>', obj.photo.url, obj.name)
 
 
 @admin.register(Review)

@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
 
-from catalog.models import AirConditioner, Color, Company
+from catalog.models import CatalogProduct, CatalogProductPrice, Color, Company
 
 
 ORDER_ACCEPTED_TITLE = "Заявку прийнято!"
@@ -47,12 +47,24 @@ class ToastMessageIntegrationTests(TestCase):
     def setUp(self):
         self.company = Company.objects.create(name="C&H")
         self.color = Color.objects.create(name="Чорний", hash="#111111")
-        self.conditioner = AirConditioner.objects.create(
+        self.conditioner = CatalogProduct.objects.create(
+            brand=self.company,
             name="CH-S09FTXAL2-FB",
-            price="33199.00",
-            photo="imported_products/ch/ch/ch-s09ftxal2-fb_80_35.png",
+            model="CH-S09FTXAL2-FB",
+            slug="ch-s09ftxal2-fb-test",
+            source_key="test-ch-s09ftxal2-fb",
+            category="air_conditioners",
+            product_type=CatalogProduct.TYPE_AIR_CONDITIONER,
+            main_image="imported_products/ch/ch/ch-s09ftxal2-fb_80_35.png",
             description="Test product",
-            company=self.company,
+        )
+        CatalogProductPrice.objects.create(
+            product=self.conditioner,
+            price_type=CatalogProductPrice.TYPE_RETAIL,
+            currency=CatalogProductPrice.CURRENCY_UAH,
+            amount="33199.00",
+            source_sheet="test",
+            source_row=self.conditioner.id,
         )
         self.conditioner.colors.add(self.color)
 

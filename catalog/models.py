@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.db import models
 
-from .apps import CatalogConfig
 from ks_klimat_kh.order_status import (
     ORDER_STATUS_CANCELLED,
     ORDER_STATUS_CHOICES,
@@ -9,9 +8,6 @@ from ks_klimat_kh.order_status import (
     ORDER_STATUS_IN_PROGRESS,
     ORDER_STATUS_NEW,
 )
-
-
-app_name = CatalogConfig.name
 
 
 class Company(models.Model):
@@ -43,17 +39,17 @@ class CatalogProduct(models.Model):
     TYPE_SEMI_INDUSTRIAL = "semi_industrial"
     TYPE_OTHER = "other"
     TYPE_CHOICES = [
-        (TYPE_AIR_CONDITIONER, "Air conditioner"),
-        (TYPE_AIR_CONDITIONER_SET, "Air conditioner set"),
-        (TYPE_INDOOR_UNIT, "Indoor unit"),
-        (TYPE_OUTDOOR_UNIT, "Outdoor unit"),
-        (TYPE_PANEL, "Panel"),
-        (TYPE_ACCESSORY, "Accessory"),
-        (TYPE_VENTILATION, "Ventilation"),
-        (TYPE_HEAT_PUMP, "Heat pump"),
-        (TYPE_MULTI_SPLIT, "Multi split"),
-        (TYPE_SEMI_INDUSTRIAL, "Semi-industrial"),
-        (TYPE_OTHER, "Other"),
+        (TYPE_AIR_CONDITIONER, "Кондиціонер"),
+        (TYPE_AIR_CONDITIONER_SET, "Комплект кондиціонера"),
+        (TYPE_INDOOR_UNIT, "Внутрішній блок"),
+        (TYPE_OUTDOOR_UNIT, "Зовнішній блок"),
+        (TYPE_PANEL, "Панель"),
+        (TYPE_ACCESSORY, "Аксесуар"),
+        (TYPE_VENTILATION, "Вентиляція"),
+        (TYPE_HEAT_PUMP, "Тепловий насос"),
+        (TYPE_MULTI_SPLIT, "Мульти-спліт"),
+        (TYPE_SEMI_INDUSTRIAL, "Напівпромисловий"),
+        (TYPE_OTHER, "Інше"),
     ]
 
     brand = models.ForeignKey(Company, on_delete=models.PROTECT, related_name="catalog_products")
@@ -69,6 +65,13 @@ class CatalogProduct(models.Model):
     description = models.TextField(blank=True, default="")
     specs = models.JSONField(default=dict, blank=True)
     main_image = models.ImageField(upload_to="catalog/products/", blank=True, null=True)
+    recommended_area_m2 = models.PositiveIntegerField(null=True, blank=True, db_index=True)
+    power_btu = models.PositiveIntegerField(null=True, blank=True)
+    energy_class = models.CharField(max_length=20, blank=True, default="")
+    country = models.CharField(max_length=100, blank=True, default="")
+    is_in_stock = models.BooleanField(default=True, db_index=True)
+    warranty_months = models.PositiveSmallIntegerField(default=24, db_index=True)
+    colors = models.ManyToManyField(Color, blank=True, related_name="catalog_products")
     is_active = models.BooleanField(default=True, db_index=True)
     is_indexable = models.BooleanField(default=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
@@ -83,6 +86,61 @@ class CatalogProduct(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def company(self):
+        return self.brand
+
+    @property
+    def photo(self):
+        if self.main_image:
+            return self.main_image
+        images = list(self.images.all()[:1])
+        if images and images[0].image:
+            return images[0].image
+        return None
+
+    @property
+    def primary_price(self):
+        prices = list(self.prices.all())
+        current_prices = [price for price in prices if price.is_current]
+        if not current_prices:
+            current_prices = prices
+
+        priority = {
+            (CatalogProductPrice.TYPE_RETAIL, CatalogProductPrice.CURRENCY_UAH): 0,
+            (CatalogProductPrice.TYPE_SET, CatalogProductPrice.CURRENCY_UAH): 1,
+            (CatalogProductPrice.TYPE_BLOCK, CatalogProductPrice.CURRENCY_UAH): 2,
+            (CatalogProductPrice.TYPE_RETAIL, CatalogProductPrice.CURRENCY_USD): 3,
+            (CatalogProductPrice.TYPE_SET, CatalogProductPrice.CURRENCY_USD): 4,
+            (CatalogProductPrice.TYPE_BLOCK, CatalogProductPrice.CURRENCY_USD): 5,
+        }
+        current_prices.sort(key=lambda price: priority.get((price.price_type, price.currency), 100))
+        return current_prices[0].amount if current_prices else None
+
+    @property
+    def primary_currency(self):
+        prices = list(self.prices.all())
+        current_prices = [price for price in prices if price.is_current]
+        if not current_prices:
+            current_prices = prices
+        priority = {
+            (CatalogProductPrice.TYPE_RETAIL, CatalogProductPrice.CURRENCY_UAH): 0,
+            (CatalogProductPrice.TYPE_SET, CatalogProductPrice.CURRENCY_UAH): 1,
+            (CatalogProductPrice.TYPE_BLOCK, CatalogProductPrice.CURRENCY_UAH): 2,
+            (CatalogProductPrice.TYPE_RETAIL, CatalogProductPrice.CURRENCY_USD): 3,
+            (CatalogProductPrice.TYPE_SET, CatalogProductPrice.CURRENCY_USD): 4,
+            (CatalogProductPrice.TYPE_BLOCK, CatalogProductPrice.CURRENCY_USD): 5,
+        }
+        current_prices.sort(key=lambda price: priority.get((price.price_type, price.currency), 100))
+        return current_prices[0].currency if current_prices else ""
+
+    @property
+    def price(self):
+        return self.primary_price
+
+    def get_conditioner_type_display(self):
+        return self.specs.get("legacy_conditioner_type") or self.specs.get("source_product_type") or self.get_product_type_display()
 
 
 class CatalogProductPrice(models.Model):
@@ -213,34 +271,8 @@ class CatalogProductImportSource(models.Model):
         return f"{self.source_sheet}:{self.source_row}"
 
 
-class AirConditioner(models.Model):
-    TYPE_NORMAL = "normal"
-    TYPE_INVERTER = "inverter"
-    TYPE_CHOICES = [
-        (TYPE_NORMAL, "Звичайний"),
-        (TYPE_INVERTER, "Інверторний"),
-    ]
-
-    name = models.CharField(max_length=100)
-    conditioner_type = models.CharField(max_length=20, choices=TYPE_CHOICES, default=TYPE_NORMAL, db_index=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    photo = models.ImageField(upload_to=app_name + "/air_conditioner_photos/")
-    description = models.TextField()
-    recommended_area_m2 = models.PositiveIntegerField(default=20, db_index=True)
-    power_btu = models.PositiveIntegerField(null=True, blank=True)
-    energy_class = models.CharField(max_length=20, blank=True, default="")
-    country = models.CharField(max_length=100, blank=True, default="")
-    is_in_stock = models.BooleanField(default=True, db_index=True)
-    warranty_months = models.PositiveSmallIntegerField(default=12, db_index=True)
-    colors = models.ManyToManyField(Color, blank=True, related_name="air_conditioners")
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.name
-
-
 class Review(models.Model):
-    conditioner = models.ForeignKey(AirConditioner, on_delete=models.CASCADE)
+    conditioner = models.ForeignKey(CatalogProduct, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     text = models.TextField()
     rating = models.IntegerField(null=True)
@@ -253,8 +285,8 @@ class ConditionerOrder(models.Model):
     name = models.CharField(max_length=100, verbose_name="Ім'я")
     phone = models.CharField(max_length=100, verbose_name="Телефон")
     address = models.CharField(max_length=100, verbose_name="Адреса")
-    conditioner = models.ForeignKey(AirConditioner, on_delete=models.CASCADE)
-    color = models.ForeignKey(Color, on_delete=models.CASCADE)
+    conditioner = models.ForeignKey(CatalogProduct, on_delete=models.PROTECT)
+    color = models.ForeignKey(Color, on_delete=models.SET_NULL, null=True, blank=True)
     status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES, default=ORDER_STATUS_NEW, db_index=True)
     manager = models.ForeignKey(
         settings.AUTH_USER_MODEL,

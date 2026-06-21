@@ -34,6 +34,10 @@ class ConditionerOrderForm(forms.ModelForm):
     def __init__(self, *args, conditioner=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.conditioner = conditioner
+        if conditioner is not None:
+            colors = conditioner.colors.all()
+            self.fields["color"].queryset = colors
+            self.fields["color"].required = colors.exists()
 
     def clean_name(self):
         name = (self.cleaned_data.get('name') or "").strip()
@@ -55,6 +59,8 @@ class ConditionerOrderForm(forms.ModelForm):
 
     def clean_color(self):
         color = self.cleaned_data.get('color')
-        if self.conditioner and not self.conditioner.colors.filter(id=color.id).exists():
+        if self.conditioner and color and not self.conditioner.colors.filter(id=color.id).exists():
+            raise forms.ValidationError("Invalid color.")
+        if self.conditioner and self.conditioner.colors.exists() and color is None:
             raise forms.ValidationError("Invalid color.")
         return color
