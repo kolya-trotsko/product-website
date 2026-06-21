@@ -9,8 +9,8 @@
 {% block viber_link %} {{ contacts.viber_link }} {% endblock %}
 
 {% block extra_head %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/home/home.css' %}?v=20260621b">
-    <script src="{% static 'js/popup.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home/home.css' %}?v=20260621e">
+    <script src="{% static 'js/popup.js' %}?v=20260621b"></script>
     <script src="{% static 'js/home.js' %}"></script>
 {% endblock %}
 
@@ -61,7 +61,7 @@
                 {% if form.option.errors %}<div class="form-errors">{{ form.option.errors }}</div>{% endif %}
                 <button type="submit" class="submit-button">Відправити</button>
             </form>
-            <button class="close-button" id="close-popup-button">Закрити</button>
+            <button class="close-button" id="close-popup-button" aria-label="Закрити форму">×</button>
         </div>
     </div>
 </div>
@@ -161,65 +161,101 @@
 
 <section class="why-us-section" aria-labelledby="why-us-title">
     <div class="why-us-copy">
-        <p class="section-kicker">Не просто “помити кондиціонер”</p>
         <h2 id="why-us-title">Що ви отримуєте після виїзду майстра</h2>
-        <p class="why-us-lead">
-            Цей блок має відповісти на головні питання перед замовленням: чи буде чисто вдома,
-            скільки часу займає робота, що саме ми миємо і коли потрібно платити.
-        </p>
-
+        <p class="why-us-lead">Професійна чистка кондиціонера для свіжого повітря, надійної роботи та вашого комфорту.</p>
         <div class="why-us-grid">
             <article class="why-us-card">
-                <span class="why-us-icon">1</span>
+                <div class="why-us-card-top">
+                    <span class="why-us-icon">1</span>
+                    <svg class="why-us-card-symbol" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z"></path>
+                        <path d="M19 14l0.9 2.1L22 17l-2.1 0.9L19 20l-0.9-2.1L16 17l2.1-0.9L19 14z"></path>
+                        <path d="M5 14l0.7 1.6L7 16.3L5.7 17L5 18.5L4.3 17L3 16.3l1.3-0.7L5 14z"></path>
+                    </svg>
+                </div>
                 <h3>Чисто в кімнаті</h3>
                 <p>Ставимо сервісний чохол на внутрішній блок, тому вода і бруд не потрапляють на стіни, меблі та підлогу.</p>
             </article>
             <article class="why-us-card">
-                <span class="why-us-icon">2</span>
+                <div class="why-us-card-top">
+                    <span class="why-us-icon">2</span>
+                    <svg class="why-us-card-symbol" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <circle cx="12" cy="12" r="8"></circle>
+                        <path d="M12 8v5l3 2"></path>
+                    </svg>
+                </div>
                 <h3>45-60 хвилин</h3>
                 <p>Стандартна чистка займає близько години. Якщо кондиціонер сильно забруднений, майстер попередить про час до початку.</p>
             </article>
             <article class="why-us-card">
-                <span class="why-us-icon">3</span>
+                <div class="why-us-card-top">
+                    <span class="why-us-icon">3</span>
+                    <svg class="why-us-card-symbol" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <rect x="9" y="3" width="6" height="18" rx="2"></rect>
+                        <path d="M4 8h3"></path>
+                        <path d="M4 12h3"></path>
+                        <path d="M4 16h3"></path>
+                        <path d="M17 8h3"></path>
+                        <path d="M17 12h3"></path>
+                        <path d="M17 16h3"></path>
+                    </svg>
+                </div>
                 <h3>Миємо не тільки фільтри</h3>
                 <p>Чистимо корпус, фільтри, теплообмінник, вентилятор, дренаж і за потреби зовнішній блок.</p>
             </article>
             <article class="why-us-card">
-                <span class="why-us-icon">4</span>
+                <div class="why-us-card-top">
+                    <span class="why-us-icon">4</span>
+                    <svg class="why-us-card-symbol" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M9 6V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1"></path>
+                        <rect x="4" y="6" width="16" height="13" rx="2"></rect>
+                        <path d="M4 12h16"></path>
+                    </svg>
+                </div>
                 <h3>Професійне обладнання</h3>
                 <p>Використовуємо мийку високого тиску Bosch і сервісні засоби для безпечного очищення.</p>
             </article>
             <article class="why-us-card">
-                <span class="why-us-icon">5</span>
+                <div class="why-us-card-top">
+                    <span class="why-us-icon">5</span>
+                    <svg class="why-us-card-symbol" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M5 7h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"></path>
+                        <path d="M16 12h5v4h-5a2 2 0 0 1 0-4z"></path>
+                        <path d="M7 5l9-2 1 2"></path>
+                        <path d="M18 14h0.01"></path>
+                    </svg>
+                </div>
                 <h3>Оплата після роботи</h3>
                 <p>Ви оплачуєте чистку після завершення, коли бачите результат і кондиціонер перевірений у роботі.</p>
             </article>
             <article class="why-us-card">
-                <span class="why-us-icon">6</span>
+                <div class="why-us-card-top">
+                    <span class="why-us-icon">6</span>
+                    <svg class="why-us-card-symbol" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M12 3l7 3v5c0 4.4-2.8 8.2-7 10-4.2-1.8-7-5.6-7-10V6l7-3z"></path>
+                        <path d="M9 12l2 2 4-4"></path>
+                    </svg>
+                </div>
                 <h3>10 років досвіду</h3>
                 <p>Працюємо з побутовими кондиціонерами, мульти-сплітами та зовнішніми блоками різних брендів.</p>
             </article>
         </div>
 
-        <button class="why-us-cta" type="button" data-open-order>Замовити чистку</button>
+        <button class="why-us-cta" type="button" data-open-order><span aria-hidden="true"></span>Замовити чистку</button>
     </div>
 
     <div class="why-us-proof" aria-label="Фото процесу чистки кондиціонера">
         <figure class="proof-photo proof-photo-large">
-            <img src="{{ MEDIA_URL }}home/4istka_s_razborom.jpg" alt="Миття внутрішнього блоку кондиціонера із сервісним чохлом" loading="lazy" decoding="async">
-            <figcaption>Захищаємо стіну і меблі сервісним чохлом</figcaption>
+            <img src="{{ MEDIA_URL }}home/ukrainian-companies/triatek-indoor-cleaning.jpeg" alt="Чистка внутрішнього блоку кондиціонера із сервісним чохлом" loading="lazy" decoding="async">
+            <figcaption>Чистимо внутрішній блок і захищаємо кімнату</figcaption>
         </figure>
         <figure class="proof-photo">
-            <img src="{{ MEDIA_URL }}home/moyka-vneshnego-bloka.jpg" alt="Миття зовнішнього блоку кондиціонера" loading="lazy" decoding="async">
-            <figcaption>Миємо зовнішній блок</figcaption>
+            <img src="{{ MEDIA_URL }}home/ukrainian-companies/triatek-outdoor-diagnostics.jpeg" alt="Майстер проводить діагностику зовнішнього блоку кондиціонера" loading="lazy" decoding="async">
+            <figcaption>Діагностуємо зовнішній блок</figcaption>
         </figure>
         <figure class="proof-photo">
-            <img src="{{ MEDIA_URL }}home/filtr.jpg" alt="Брудні фільтри кондиціонера перед чисткою" loading="lazy" decoding="async">
-            <figcaption>Прибираємо пил із фільтрів</figcaption>
-        </figure>
-        <figure class="proof-photo">
-            <img src="{{ MEDIA_URL }}home/uefifgga9t0_5d0a2e0c6310b.jpg" alt="Забруднений теплообмінник кондиціонера перед очищенням" loading="lazy" decoding="async">
-            <figcaption>Очищаємо теплообмінник</figcaption>
+            <img src="{{ MEDIA_URL }}home/ukrainian-companies/triatek-outdoor-service.jpeg" alt="Сервісне обладнання підключене до зовнішнього блоку кондиціонера" loading="lazy" decoding="async">
+            <figcaption>Працюємо професійним сервісним обладнанням</figcaption>
         </figure>
     </div>
 </section>
