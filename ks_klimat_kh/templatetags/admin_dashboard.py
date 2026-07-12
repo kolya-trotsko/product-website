@@ -4,9 +4,9 @@ from django import template
 from django.db.models import Q
 from django.utils import timezone
 
-from catalog.models import ConditionerOrder, ORDER_STATUS_IN_PROGRESS, ORDER_STATUS_NEW
+from catalog.models import ConditionerOrder
+from ks_klimat_kh.order_status import ORDER_STATUS_IN_PROGRESS, ORDER_STATUS_NEW
 from service.models import Order, ServiceOrder
-
 
 register = template.Library()
 

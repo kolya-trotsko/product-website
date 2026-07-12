@@ -2,20 +2,16 @@ import json
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db import IntegrityError, transaction
 from django.http import HttpResponseBadRequest, HttpResponseForbidden, JsonResponse
+from django.utils.crypto import constant_time_compare
 from django.views.decorators.csrf import csrf_exempt
 
 from catalog.models import ConditionerOrder
+from ks_klimat_kh.models import TelegramUpdate
+from ks_klimat_kh.order_status import ORDER_STATUS_DONE, ORDER_STATUS_IN_PROGRESS, ORDER_STATUS_NEW, transition_order
 from ks_klimat_kh.telegram_notify import send_message
-from service.models import (
-    BotLead,
-    Order,
-    ServiceOrder,
-    ORDER_STATUS_DONE,
-    ORDER_STATUS_IN_PROGRESS,
-    ORDER_STATUS_NEW,
-)
-
+from service.models import BotLead, Order, ServiceOrder
 
 ORDER_MODEL_MAP = {
     "home": Order,
@@ -67,7 +63,7 @@ def _handle_assign(chat_id, text):
 
     username = username_raw.lstrip("@")
     user_model = get_user_model()
-    manager = user_model.objects.filter(username=username).first()
+    manager = user_model.objects.filter(username=username, is_active=True, is_staff=True).first()
     if not manager:
         send_message("Менеджера з таким username не знайдено.", chat_id=chat_id)
         return
@@ -77,9 +73,7 @@ def _handle_assign(chat_id, text):
         send_message("Заявку не знайдено.", chat_id=chat_id)
         return
 
-    order.manager = manager
-    order.status = ORDER_STATUS_IN_PROGRESS
-    order.save(update_fields=["manager", "status", "updated_at"])
+    transition_order(order, ORDER_STATUS_IN_PROGRESS, manager=manager)
     send_message(f"Призначено {manager.username} на заявку {order_type} #{order.id}.", chat_id=chat_id)
 
 
@@ -94,6 +88,14 @@ def _create_bot_lead(user_id, username, full_name, intent, text):
 
 
 def process_telegram_update(payload):
+    update_id = payload.get("update_id")
+    if update_id is not None:
+        try:
+            with transaction.atomic():
+                TelegramUpdate.objects.create(update_id=update_id)
+        except IntegrityError:
+            return
+
     message = payload.get("message") or {}
     chat = message.get("chat") or {}
     sender = message.get("from") or {}
@@ -151,15 +153,23 @@ def process_telegram_update(payload):
 def telegram_webhook(request, secret):
     if not settings.TELEGRAM_NOTIFICATIONS_ENABLED:
         return HttpResponseForbidden("Telegram integration disabled.")
-    if not settings.TELEGRAM_WEBHOOK_SECRET or secret != settings.TELEGRAM_WEBHOOK_SECRET:
+    expected_secret = settings.TELEGRAM_WEBHOOK_SECRET
+    header_secret = request.headers.get("X-Telegram-Bot-Api-Secret-Token", "")
+    if not expected_secret or not (
+        constant_time_compare(header_secret, expected_secret) or constant_time_compare(secret, expected_secret)
+    ):
         return HttpResponseForbidden("Invalid webhook secret.")
     if request.method != "POST":
         return HttpResponseBadRequest("POST only.")
+    if len(request.body) > getattr(settings, "TELEGRAM_WEBHOOK_MAX_BYTES", 65536):
+        return HttpResponseBadRequest("Request body too large.")
 
     try:
         payload = json.loads(request.body.decode("utf-8"))
-    except json.JSONDecodeError:
+    except (UnicodeDecodeError, json.JSONDecodeError):
         return HttpResponseBadRequest("Invalid JSON.")
+    if not isinstance(payload, dict):
+        return HttpResponseBadRequest("Invalid JSON payload.")
 
     process_telegram_update(payload)
     return JsonResponse({"ok": True})

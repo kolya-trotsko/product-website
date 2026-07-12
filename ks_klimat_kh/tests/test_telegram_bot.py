@@ -42,6 +42,7 @@ class TelegramBotWebhookTests(TestCase):
             username="manager1",
             email="m1@example.com",
             password="pass1234",
+            is_staff=True,
         )
         order = Order.objects.create(name="Client", phone="+380500000001", place="Office")
 

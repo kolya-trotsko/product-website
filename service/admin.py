@@ -31,6 +31,7 @@ class OrderAdmin(OrderWorkflowAdminMixin, admin.ModelAdmin):
                     "unaccepted_reminded_at",
                     "service_reminder_6m_sent_at",
                     "service_reminder_12m_sent_at",
+                    "completed_at",
                     "created_at",
                     "updated_at",
                 )
@@ -41,7 +42,17 @@ class OrderAdmin(OrderWorkflowAdminMixin, admin.ModelAdmin):
 
 @admin.register(ServiceOrder)
 class ServiceOrderAdmin(OrderWorkflowAdminMixin, admin.ModelAdmin):
-    list_display = ("status_badge", "status", "created_at", "name", "phone_link", "place", "address", "manager", "age_display")
+    list_display = (
+        "status_badge",
+        "status",
+        "created_at",
+        "name",
+        "phone_link",
+        "place",
+        "address",
+        "manager",
+        "age_display",
+    )
     list_display_links = ("name",)
     list_editable = ("status", "manager")
     list_filter = ("status", AssignmentFilter, FreshnessFilter, "manager", "created_at")
@@ -59,6 +70,7 @@ class ServiceOrderAdmin(OrderWorkflowAdminMixin, admin.ModelAdmin):
                     "unaccepted_reminded_at",
                     "service_reminder_6m_sent_at",
                     "service_reminder_12m_sent_at",
+                    "completed_at",
                     "created_at",
                     "updated_at",
                 )

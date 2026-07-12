@@ -3,13 +3,19 @@ from datetime import timedelta
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from catalog.models import ConditionerOrder, ORDER_STATUS_DONE as C_DONE, ORDER_STATUS_NEW as C_NEW
+from catalog.models import ORDER_STATUS_DONE as C_DONE
+from catalog.models import ORDER_STATUS_NEW as C_NEW
+from catalog.models import ConditionerOrder
 from ks_klimat_kh.telegram_notify import notify_service_cycle, notify_unaccepted_order
+from service.models import (
+    ORDER_STATUS_DONE as S_DONE,
+)
+from service.models import (
+    ORDER_STATUS_NEW as S_NEW,
+)
 from service.models import (
     Order,
     ServiceOrder,
-    ORDER_STATUS_DONE as S_DONE,
-    ORDER_STATUS_NEW as S_NEW,
 )
 
 
@@ -43,8 +49,6 @@ class Command(BaseCommand):
         )[:100]
         for order in queryset:
             notify_unaccepted_order(order_type, order)
-            order.unaccepted_reminded_at = timezone.now()
-            order.save(update_fields=["unaccepted_reminded_at", "updated_at"])
             count += 1
         return count
 
@@ -55,22 +59,19 @@ class Command(BaseCommand):
 
         for order in model.objects.filter(
             status=status_done,
-            created_at__lte=six_months,
-            service_reminder_6m_sent_at__isnull=True,
+            completed_at__lte=twelve_months,
+            service_reminder_12m_sent_at__isnull=True,
         )[:100]:
-            notify_service_cycle(order_type, order, 6)
-            order.service_reminder_6m_sent_at = timezone.now()
-            order.save(update_fields=["service_reminder_6m_sent_at", "updated_at"])
+            notify_service_cycle(order_type, order, 12)
             count += 1
 
         for order in model.objects.filter(
             status=status_done,
-            created_at__lte=twelve_months,
-            service_reminder_12m_sent_at__isnull=True,
+            completed_at__lte=six_months,
+            completed_at__gt=twelve_months,
+            service_reminder_6m_sent_at__isnull=True,
         )[:100]:
-            notify_service_cycle(order_type, order, 12)
-            order.service_reminder_12m_sent_at = timezone.now()
-            order.save(update_fields=["service_reminder_12m_sent_at", "updated_at"])
+            notify_service_cycle(order_type, order, 6)
             count += 1
 
         return count

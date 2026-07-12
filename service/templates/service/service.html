@@ -78,10 +78,11 @@
 
 <button class="cta-button" id="show-popup-button">Замовити послугу</button>
 
-<div id="popup-container" class="popup">
+<div id="popup-container" class="popup {% if form.errors %}is-open{% endif %}" role="dialog" aria-modal="true">
     <div class="popup-content">
         <form method="post" action="{% url 'service' %}" id="order-form">
             {% csrf_token %}
+            {% if form.errors %}<div class="form-errors" role="alert" tabindex="-1">Перевірте поля форми.</div>{% endif %}
             {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
             <input type="text" name="name" id="name" placeholder="Ваше ім'я" class="input-field" value="{{ form.name.value|default:'' }}" required>
             {% if form.name.errors %}<div class="form-errors">{{ form.name.errors }}</div>{% endif %}

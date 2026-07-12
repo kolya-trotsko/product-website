@@ -9,3 +9,19 @@ ORDER_STATUS_CHOICES = [
     (ORDER_STATUS_DONE, "Done"),
     (ORDER_STATUS_CANCELLED, "Cancelled"),
 ]
+
+
+def transition_order(order, status, manager=None):
+    order.status = status
+    if manager is not None:
+        order.manager = manager
+    order.save()
+    return order
+
+
+def transition_queryset(queryset, status):
+    count = 0
+    for order in queryset.iterator():
+        transition_order(order, status)
+        count += 1
+    return count

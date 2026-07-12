@@ -1,8 +1,6 @@
-import re
 from django import forms
 
-
-PHONE_RE = re.compile(r"^[0-9+()\\-\\s]{7,20}$")
+from ks_klimat_kh.validators import validate_phone
 
 
 class OrderForm(forms.Form):
@@ -11,10 +9,8 @@ class OrderForm(forms.Form):
     option = forms.CharField(min_length=2, max_length=100)
 
     def clean_phone(self):
-        phone = (self.cleaned_data.get('phone') or "").strip()
-        if not PHONE_RE.match(phone):
-            raise forms.ValidationError("Invalid phone.")
-        return phone
+        phone = (self.cleaned_data.get("phone") or "").strip()
+        return validate_phone(phone)
 
 
 class ServiceOrderForm(forms.Form):
@@ -28,7 +24,5 @@ class ServiceOrderForm(forms.Form):
         self.fields["services"].choices = service_choices or []
 
     def clean_phone(self):
-        phone = (self.cleaned_data.get('phone') or "").strip()
-        if not PHONE_RE.match(phone):
-            raise forms.ValidationError("Invalid phone.")
-        return phone
+        phone = (self.cleaned_data.get("phone") or "").strip()
+        return validate_phone(phone)

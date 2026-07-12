@@ -2,10 +2,8 @@ from django.conf import settings
 from django.db import models
 
 from ks_klimat_kh.order_status import (
-    ORDER_STATUS_CANCELLED,
     ORDER_STATUS_CHOICES,
     ORDER_STATUS_DONE,
-    ORDER_STATUS_IN_PROGRESS,
     ORDER_STATUS_NEW,
 )
 
@@ -36,6 +34,7 @@ class Order(models.Model):
     unaccepted_reminded_at = models.DateTimeField(null=True, blank=True)
     service_reminder_6m_sent_at = models.DateTimeField(null=True, blank=True)
     service_reminder_12m_sent_at = models.DateTimeField(null=True, blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -44,6 +43,15 @@ class Order(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        from django.utils import timezone
+
+        if self.status == ORDER_STATUS_DONE and self.completed_at is None:
+            self.completed_at = timezone.now()
+        elif self.status != ORDER_STATUS_DONE:
+            self.completed_at = None
+        super().save(*args, **kwargs)
 
 
 class ServiceOrder(models.Model):
@@ -65,6 +73,7 @@ class ServiceOrder(models.Model):
     unaccepted_reminded_at = models.DateTimeField(null=True, blank=True)
     service_reminder_6m_sent_at = models.DateTimeField(null=True, blank=True)
     service_reminder_12m_sent_at = models.DateTimeField(null=True, blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -73,6 +82,15 @@ class ServiceOrder(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        from django.utils import timezone
+
+        if self.status == ORDER_STATUS_DONE and self.completed_at is None:
+            self.completed_at = timezone.now()
+        elif self.status != ORDER_STATUS_DONE:
+            self.completed_at = None
+        super().save(*args, **kwargs)
 
 
 class BotLead(models.Model):

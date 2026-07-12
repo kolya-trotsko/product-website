@@ -10,8 +10,8 @@ from ks_klimat_kh.order_status import (
     ORDER_STATUS_DONE,
     ORDER_STATUS_IN_PROGRESS,
     ORDER_STATUS_NEW,
+    transition_queryset,
 )
-
 
 STATUS_BADGE_CLASS = {
     ORDER_STATUS_NEW: "status-new",
@@ -55,8 +55,7 @@ class FreshnessFilter(admin.SimpleListFilter):
             return queryset.filter(created_at__date=now.date())
         if self.value() == "stale":
             return queryset.filter(
-                Q(status__in=[ORDER_STATUS_NEW, ORDER_STATUS_IN_PROGRESS])
-                & Q(created_at__lt=now - timedelta(hours=24))
+                Q(status__in=[ORDER_STATUS_NEW, ORDER_STATUS_IN_PROGRESS]) & Q(created_at__lt=now - timedelta(hours=24))
             )
         return queryset
 
@@ -72,6 +71,7 @@ class OrderWorkflowAdminMixin:
         "unaccepted_reminded_at",
         "service_reminder_6m_sent_at",
         "service_reminder_12m_sent_at",
+        "completed_at",
     )
     actions = ("mark_new", "mark_in_progress", "mark_done", "mark_cancelled")
 
@@ -95,20 +95,20 @@ class OrderWorkflowAdminMixin:
 
     @admin.action(description="Set status: New")
     def mark_new(self, request, queryset):
-        updated = queryset.update(status=ORDER_STATUS_NEW)
+        updated = transition_queryset(queryset, ORDER_STATUS_NEW)
         self.message_user(request, f"Updated {updated} item(s).")
 
     @admin.action(description="Set status: In progress")
     def mark_in_progress(self, request, queryset):
-        updated = queryset.update(status=ORDER_STATUS_IN_PROGRESS)
+        updated = transition_queryset(queryset, ORDER_STATUS_IN_PROGRESS)
         self.message_user(request, f"Updated {updated} item(s).")
 
     @admin.action(description="Set status: Done")
     def mark_done(self, request, queryset):
-        updated = queryset.update(status=ORDER_STATUS_DONE)
+        updated = transition_queryset(queryset, ORDER_STATUS_DONE)
         self.message_user(request, f"Updated {updated} item(s).")
 
     @admin.action(description="Set status: Cancelled")
     def mark_cancelled(self, request, queryset):
-        updated = queryset.update(status=ORDER_STATUS_CANCELLED)
+        updated = transition_queryset(queryset, ORDER_STATUS_CANCELLED)
         self.message_user(request, f"Updated {updated} item(s).")
