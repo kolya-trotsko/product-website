@@ -1,9 +1,9 @@
-from urllib.parse import parse_qs, urlparse
 import sys
+from unittest import skipIf
+from urllib.parse import parse_qs, urlparse
 
 from django.test import TestCase, override_settings
 from django.urls import reverse
-from unittest import skipIf
 
 
 @override_settings(
