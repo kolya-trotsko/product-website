@@ -8,7 +8,6 @@ from django.urls import reverse
 
 from catalog.models import CatalogProduct, CatalogProductPrice, Color, Company
 
-
 ORDER_ACCEPTED_TITLE = "Заявку прийнято!"
 ORDER_ACCEPTED_TEXT = "Дякуємо за звернення. Наш менеджер зв’яжеться з вами найближчим часом."
 

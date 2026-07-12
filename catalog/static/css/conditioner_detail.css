@@ -124,6 +124,35 @@
   background: #fee2e2;
 }
 
+.product-rating-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.product-rating-summary span {
+  color: #f59e0b;
+}
+
+.product-rating-link {
+  display: flex;
+  margin-top: 12px;
+  text-decoration: none;
+}
+
+.product-rating-link:hover,
+.product-rating-link:focus {
+  background: #dbeafe;
+  outline: none;
+}
+
 .product-price {
   margin: 22px 0 28px;
   color: #0d7fe1;
@@ -285,6 +314,15 @@
   margin: 0 0 18px;
   color: #111827;
   font-size: 24px;
+}
+
+.reviews-title-rating {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  color: #1d4ed8;
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .product-panel p {

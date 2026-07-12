@@ -34,6 +34,13 @@
                             {% endif %}
                         </a>
                         <span class="compare-type-badge">{{ c.get_conditioner_type_display }}</span>
+                        <p class="product-rating-summary compare-rating-summary">
+                            {% if c.rating_count %}
+                                <span aria-hidden="true">★</span> {{ c.rating_avg|floatformat:"1" }} · ({{ c.rating_count }})
+                            {% else %}
+                                Немає відгуків
+                            {% endif %}
+                        </p>
                         <p class="compare-product-price">{% if c.primary_price %}{{ c.primary_price }} {{ c.primary_currency }}{% else %}Ціну уточнюйте{% endif %}</p>
                         <span class="compare-stock-badge {% if c.is_in_stock %}is-stock{% else %}is-out{% endif %}">
                             {% if c.is_in_stock %}✓ В наявності{% else %}Немає в наявності{% endif %}
@@ -74,6 +81,10 @@
                         <tr>
                             <td><svg class="compare-param-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 10-13h-7l0-7z"></path></svg>Потужність</td>
                             {% for c in conditioners %}<td>{% if c.power_btu %}{{ c.power_btu }} BTU{% else %}-{% endif %}</td>{% endfor %}
+                        </tr>
+                        <tr>
+                            <td><svg class="compare-param-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3z"></path></svg>Рейтинг</td>
+                            {% for c in conditioners %}<td>{% if c.rating_count %}{{ c.rating_avg|floatformat:"1" }} з 5, ({{ c.rating_count }}){% else %}-{% endif %}</td>{% endfor %}
                         </tr>
                         <tr>
                             <td><svg class="compare-param-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4c-7 0-12 4-12 10 0 3 2 5 5 5 6 0 8-8 7-15z"></path><path d="M4 20c3-5 6-8 12-10"></path></svg>Енергоефективність</td>

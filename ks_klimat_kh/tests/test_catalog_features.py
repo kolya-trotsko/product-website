@@ -1,10 +1,11 @@
 import sys
-
-from django.test import TestCase
-from django.urls import reverse
 from unittest import skipIf
 
-from catalog.models import CatalogProduct, CatalogProductPrice, Color, Company
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+from django.urls import reverse
+
+from catalog.models import CatalogProduct, CatalogProductPrice, Color, Company, Review
 
 
 def add_price(product, amount):
@@ -59,6 +60,21 @@ class CatalogFeatureTests(TestCase):
             specs={"legacy_conditioner_type": "Звичайний"},
         )
         add_price(self.ac_out, "900.00")
+        self.user = get_user_model().objects.create_user(
+            username="rating-user",
+            email="rating-user@example.com",
+            password="pass1234",
+        )
+        self.user2 = get_user_model().objects.create_user(
+            username="rating-user-2",
+            email="rating-user-2@example.com",
+            password="pass1234",
+        )
+        self.user3 = get_user_model().objects.create_user(
+            username="rating-user-3",
+            email="rating-user-3@example.com",
+            password="pass1234",
+        )
 
     def test_catalog_filter_by_type_and_stock(self):
         response = self.client.get(
@@ -79,3 +95,54 @@ class CatalogFeatureTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "AC Inverter")
         self.assertContains(response, "AC Normal")
+
+    def test_catalog_filter_by_rating(self):
+        Review.objects.create(conditioner=self.ac_in, user=self.user, text="Great", rating=5)
+        Review.objects.create(conditioner=self.ac_in, user=self.user2, text="Good", rating=4)
+        Review.objects.create(conditioner=self.ac_out, user=self.user3, text="Average", rating=3)
+
+        response = self.client.get(reverse("catalog"), {"rating": "4.5"})
+
+        self.assertEqual(response.status_code, 200)
+        page = response.context["conditioners"]
+        ids = [obj.id for obj in page.object_list]
+        self.assertIn(self.ac_in.id, ids)
+        self.assertNotIn(self.ac_out.id, ids)
+
+
+class ProductRatingCacheTests(TestCase):
+    def setUp(self):
+        self.company = Company.objects.create(name="RatingCo")
+        self.product = CatalogProduct.objects.create(
+            brand=self.company,
+            name="Rated AC",
+            model="Rated AC",
+            slug="rated-ac",
+            source_key="test-rated-ac",
+            category="air_conditioners",
+            product_type=CatalogProduct.TYPE_AIR_CONDITIONER,
+            description="desc",
+        )
+        self.user = get_user_model().objects.create_user(
+            username="rating-cache-user",
+            email="rating-cache-user@example.com",
+            password="pass1234",
+        )
+        self.user2 = get_user_model().objects.create_user(
+            username="rating-cache-user-2",
+            email="rating-cache-user-2@example.com",
+            password="pass1234",
+        )
+
+    def test_rating_cache_updates_after_review_save_and_delete(self):
+        review = Review.objects.create(conditioner=self.product, user=self.user, text="Great", rating=5)
+        Review.objects.create(conditioner=self.product, user=self.user2, text="Good", rating=4)
+
+        self.product.refresh_from_db()
+        self.assertEqual(self.product.rating_count, 2)
+        self.assertEqual(str(self.product.rating_avg), "4.50")
+
+        review.delete()
+        self.product.refresh_from_db()
+        self.assertEqual(self.product.rating_count, 1)
+        self.assertEqual(str(self.product.rating_avg), "4.00")

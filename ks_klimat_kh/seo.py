@@ -28,11 +28,7 @@ def absolute_url(request, path):
 def local_business_schema(request, contacts=None):
     same_as = []
     if contacts:
-        same_as = [
-            url
-            for url in [contacts.instagram_link, contacts.telegram_link, contacts.viber_link]
-            if url
-        ]
+        same_as = [url for url in [contacts.instagram_link, contacts.telegram_link, contacts.viber_link] if url]
 
     data = {
         "@context": "https://schema.org",
@@ -68,7 +64,6 @@ def local_business_schema(request, contacts=None):
 def product_schema(request, conditioner, reviews):
     photo = conditioner.photo
     price = conditioner.primary_price
-    currency = conditioner.primary_currency or "UAH"
     data = {
         "@context": "https://schema.org",
         "@type": "Product",
@@ -79,20 +74,21 @@ def product_schema(request, conditioner, reviews):
             "@type": "Brand",
             "name": conditioner.brand.name,
         },
-        "offers": {
+    }
+    if price is not None and conditioner.primary_currency:
+        data["offers"] = {
             "@type": "Offer",
             "url": absolute_url(request, request.path),
-            "priceCurrency": currency,
+            "priceCurrency": conditioner.primary_currency,
             "price": str(price) if price is not None else "",
             "availability": (
-                "https://schema.org/InStock"
-                if conditioner.is_in_stock
-                else "https://schema.org/OutOfStock"
+                "https://schema.org/InStock" if conditioner.is_in_stock else "https://schema.org/OutOfStock"
             ),
-        },
-    }
+        }
 
-    rating = reviews.exclude(rating__isnull=True).aggregate(avg=Avg("rating"), count=Count("id"))
+    rating = (
+        reviews.exclude(rating__isnull=True).filter(is_superseded=False).aggregate(avg=Avg("rating"), count=Count("id"))
+    )
     if rating["count"]:
         data["aggregateRating"] = {
             "@type": "AggregateRating",

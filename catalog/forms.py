@@ -1,18 +1,17 @@
-import re
 from django import forms
-from .models import Review, ConditionerOrder
 
+from ks_klimat_kh.validators import validate_phone
 
-PHONE_RE = re.compile(r"^[0-9+()\\-\\s]{7,20}$")
+from .models import ConditionerOrder, Review
 
 
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ['text', 'rating']
+        fields = ["text", "rating"]
 
     def clean_rating(self):
-        rating = self.cleaned_data.get('rating')
+        rating = self.cleaned_data.get("rating")
         if rating is None:
             return rating
         if rating < 1 or rating > 5:
@@ -20,14 +19,14 @@ class ReviewForm(forms.ModelForm):
         return rating
 
     def clean_text(self):
-        text = (self.cleaned_data.get('text') or "").strip()
+        text = (self.cleaned_data.get("text") or "").strip()
         return text
 
 
 class ConditionerOrderForm(forms.ModelForm):
     class Meta:
         model = ConditionerOrder
-        fields = ['name', 'phone', 'address', 'color']
+        fields = ["name", "phone", "address", "color"]
 
     def __init__(self, *args, conditioner=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -38,25 +37,23 @@ class ConditionerOrderForm(forms.ModelForm):
             self.fields["color"].required = colors.exists()
 
     def clean_name(self):
-        name = (self.cleaned_data.get('name') or "").strip()
+        name = (self.cleaned_data.get("name") or "").strip()
         if len(name) < 2:
             raise forms.ValidationError("Invalid name.")
         return name
 
     def clean_phone(self):
-        phone = (self.cleaned_data.get('phone') or "").strip()
-        if not PHONE_RE.match(phone):
-            raise forms.ValidationError("Invalid phone.")
-        return phone
+        phone = (self.cleaned_data.get("phone") or "").strip()
+        return validate_phone(phone)
 
     def clean_address(self):
-        address = (self.cleaned_data.get('address') or "").strip()
+        address = (self.cleaned_data.get("address") or "").strip()
         if len(address) < 5:
             raise forms.ValidationError("Invalid address.")
         return address
 
     def clean_color(self):
-        color = self.cleaned_data.get('color')
+        color = self.cleaned_data.get("color")
         if self.conditioner and color and not self.conditioner.colors.filter(id=color.id).exists():
             raise forms.ValidationError("Invalid color.")
         if self.conditioner and self.conditioner.colors.exists() and color is None:

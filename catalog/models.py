@@ -1,11 +1,10 @@
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 from ks_klimat_kh.order_status import (
-    ORDER_STATUS_CANCELLED,
     ORDER_STATUS_CHOICES,
     ORDER_STATUS_DONE,
-    ORDER_STATUS_IN_PROGRESS,
     ORDER_STATUS_NEW,
 )
 
@@ -24,6 +23,21 @@ class Color(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class CatalogProductQuerySet(models.QuerySet):
+    def public(self):
+        return self.filter(
+            is_active=True,
+            is_indexable=True,
+            product_type__in=[
+                CatalogProduct.TYPE_AIR_CONDITIONER,
+                CatalogProduct.TYPE_AIR_CONDITIONER_SET,
+                CatalogProduct.TYPE_MULTI_SPLIT,
+                CatalogProduct.TYPE_SEMI_INDUSTRIAL,
+                CatalogProduct.TYPE_HEAT_PUMP,
+            ],
+        )
 
 
 class CatalogProduct(models.Model):
@@ -71,11 +85,15 @@ class CatalogProduct(models.Model):
     country = models.CharField(max_length=100, blank=True, default="")
     is_in_stock = models.BooleanField(default=True, db_index=True)
     warranty_months = models.PositiveSmallIntegerField(default=24, db_index=True)
+    rating_avg = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True, db_index=True)
+    rating_count = models.PositiveIntegerField(default=0, db_index=True)
     colors = models.ManyToManyField(Color, blank=True, related_name="catalog_products")
     is_active = models.BooleanField(default=True, db_index=True)
     is_indexable = models.BooleanField(default=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = CatalogProductQuerySet.as_manager()
 
     class Meta:
         ordering = ("brand__name", "model")
@@ -140,7 +158,11 @@ class CatalogProduct(models.Model):
         return self.primary_price
 
     def get_conditioner_type_display(self):
-        return self.specs.get("legacy_conditioner_type") or self.specs.get("source_product_type") or self.get_product_type_display()
+        return (
+            self.specs.get("legacy_conditioner_type")
+            or self.specs.get("source_product_type")
+            or self.get_product_type_display()
+        )
 
 
 class CatalogProductPrice(models.Model):
@@ -276,6 +298,22 @@ class Review(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     text = models.TextField()
     rating = models.IntegerField(null=True)
+    is_superseded = models.BooleanField(default=False, db_index=True)
+    created_at = models.DateTimeField(default=timezone.now, db_index=True, editable=False)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(rating__gte=1, rating__lte=5),
+                name="review_rating_between_1_and_5",
+            ),
+            models.UniqueConstraint(
+                fields=("conditioner", "user"),
+                condition=models.Q(is_superseded=False),
+                name="uniq_active_review_per_user_product",
+            ),
+        ]
 
     def __str__(self):
         return f"Review: {self.user.get_username()} ({self.conditioner})"
@@ -301,6 +339,7 @@ class ConditionerOrder(models.Model):
     unaccepted_reminded_at = models.DateTimeField(null=True, blank=True)
     service_reminder_6m_sent_at = models.DateTimeField(null=True, blank=True)
     service_reminder_12m_sent_at = models.DateTimeField(null=True, blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -309,3 +348,12 @@ class ConditionerOrder(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        from django.utils import timezone
+
+        if self.status == ORDER_STATUS_DONE and self.completed_at is None:
+            self.completed_at = timezone.now()
+        elif self.status != ORDER_STATUS_DONE:
+            self.completed_at = None
+        super().save(*args, **kwargs)

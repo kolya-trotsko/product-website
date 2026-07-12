@@ -46,6 +46,13 @@
             <span class="product-stock {% if conditioner.is_in_stock %}is-stock{% else %}is-out{% endif %}">
                 {% if conditioner.is_in_stock %}✓ В наявності{% else %}Немає в наявності{% endif %}
             </span>
+            <a class="product-rating-summary product-rating-link" href="#product-reviews">
+                {% if conditioner.rating_count %}
+                    <span aria-hidden="true">★</span> {{ conditioner.rating_avg|floatformat:"1" }} з 5 · ({{ conditioner.rating_count }})
+                {% else %}
+                    Ще немає відгуків
+                {% endif %}
+            </a>
             <p class="product-price">{% if conditioner.primary_price %}{{ conditioner.primary_price|floatformat:"2" }} {{ conditioner.primary_currency }}{% else %}Ціну уточнюйте{% endif %}</p>
 
             <div class="product-highlights">
@@ -120,15 +127,18 @@
                 <div><dt>Потужність</dt><dd>{% if conditioner.power_btu %}{{ conditioner.power_btu }} BTU{% else %}-{% endif %}</dd></div>
                 <div><dt>Енергоефективність</dt><dd>{{ conditioner.energy_class|default:"-" }}</dd></div>
                 <div><dt>Країна</dt><dd>{{ conditioner.country|default:"-" }}</dd></div>
+                <div><dt>Рейтинг</dt><dd>{% if conditioner.rating_count %}{{ conditioner.rating_avg|floatformat:"1" }} з 5, ({{ conditioner.rating_count }}){% else %}-{% endif %}</dd></div>
             </dl>
         </article>
     </section>
 
-    <div id="popup-container" class="popup">
+    <div id="popup-container" class="popup {% if order_form.errors %}is-open{% endif %}" role="dialog" aria-modal="true" aria-labelledby="order-form-title">
         <div class="popup-content">
             <form method="post" action="{% url 'conditioner_detail' conditioner.id %}" id="order-form">
                 {% csrf_token %}
-                {% if order_form.non_field_errors %}<div class="form-errors">{{ order_form.non_field_errors }}</div>{% endif %}
+                <h2 id="order-form-title">Замовлення кондиціонера</h2>
+                {% if order_form.errors %}<div class="form-errors" role="alert" tabindex="-1">Перевірте поля форми.</div>{% endif %}
+                {% if order_form.non_field_errors %}<div class="form-errors" role="alert">{{ order_form.non_field_errors }}</div>{% endif %}
                 <label for="name">Ім'я</label>
                 <input type="text" name="name" id="name" class="input-field" value="{{ order_form.name.value|default:'' }}" required>
                 {% if order_form.name.errors %}<div class="form-errors">{{ order_form.name.errors }}</div>{% endif %}
@@ -141,6 +151,7 @@
                 <input type="text" name="address" id="address" class="input-field" value="{{ order_form.address.value|default:'' }}" required>
                 {% if order_form.address.errors %}<div class="form-errors">{{ order_form.address.errors }}</div>{% endif %}
 
+                {% if order_form.fields.color.required %}
                 <label for="color">Колір</label>
                 <select name="color" id="color" class="input-field" required>
                     {% for color in conditioner.colors.all %}
@@ -148,6 +159,7 @@
                     {% endfor %}
                 </select>
                 {% if order_form.color.errors %}<div class="form-errors">{{ order_form.color.errors }}</div>{% endif %}
+                {% endif %}
 
                 <button type="submit" class="submit-button">Відправити</button>
             </form>
@@ -180,8 +192,13 @@
             {% endif %}
         </div>
 
-        <div class="product-reviews">
-            <h3>Відгуки:</h3>
+        <div class="product-reviews" id="product-reviews">
+            <h3>
+                Відгуки:
+                {% if conditioner.rating_count %}
+                    <span class="reviews-title-rating">★ {{ conditioner.rating_avg|floatformat:"1" }} · {{ conditioner.rating_count }}</span>
+                {% endif %}
+            </h3>
             <ul>
                 {% if reviews %}
                     {% for review in reviews %}

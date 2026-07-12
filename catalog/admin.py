@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from ks_klimat_kh.admin_mixins import AssignmentFilter, FreshnessFilter, OrderWorkflowAdminMixin
 
 from .models import (
@@ -60,16 +61,28 @@ class CatalogProductAdmin(admin.ModelAdmin):
         "category",
         "series",
         "recommended_area_m2",
+        "rating_avg",
+        "rating_count",
         "warranty_months",
         "is_in_stock",
         "is_active",
         "is_indexable",
         "updated_at",
     )
-    list_filter = ("brand", "product_type", "category", "is_in_stock", "warranty_months", "is_active", "is_indexable", "colors")
+    list_filter = (
+        "brand",
+        "product_type",
+        "category",
+        "is_in_stock",
+        "warranty_months",
+        "rating_count",
+        "is_active",
+        "is_indexable",
+        "colors",
+    )
     search_fields = ("name", "model", "brand__name", "series", "source_key", "country", "energy_class")
     list_select_related = ("brand",)
-    readonly_fields = ("source_key", "created_at", "updated_at")
+    readonly_fields = ("source_key", "rating_avg", "rating_count", "created_at", "updated_at")
     filter_horizontal = ("colors",)
     inlines = (
         CatalogProductPriceInline,
@@ -150,6 +163,7 @@ class ConditionerOrderAdmin(OrderWorkflowAdminMixin, admin.ModelAdmin):
                     "unaccepted_reminded_at",
                     "service_reminder_6m_sent_at",
                     "service_reminder_12m_sent_at",
+                    "completed_at",
                     "created_at",
                     "updated_at",
                 )

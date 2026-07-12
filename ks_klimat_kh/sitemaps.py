@@ -20,11 +20,10 @@ class CatalogProductSitemap(Sitemap):
     priority = 0.7
 
     def items(self):
-        return (
-            CatalogProduct.objects.filter(is_active=True, is_indexable=True, is_in_stock=True)
-            .select_related("brand")
-            .order_by("id")
-        )
+        return CatalogProduct.objects.public().select_related("brand").order_by("id")
 
     def location(self, item):
         return reverse("conditioner_detail", args=[item.id])
+
+    def lastmod(self, item):
+        return item.updated_at
