@@ -41,7 +41,7 @@ Set these env vars (for example in `.env`):
 
 ```env
 TELEGRAM_NOTIFICATIONS_ENABLED=True
-TELEGRAM_BOT_TOKEN=123456:your_bot_token
+TELEGRAM_BOT_TOKEN=
 TELEGRAM_ADMIN_CHAT_IDS=123456789,987654321
 TELEGRAM_WEBHOOK_SECRET=long_random_secret
 ```
