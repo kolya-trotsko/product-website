@@ -1,0 +1,30 @@
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+exclude = [
+    "venv",
+    "staticfiles",
+    "media",
+    "one_time_import",
+    "migrations",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "DJ"]
+ignore = ["DJ001", "DJ008", "DJ012", "E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+line-ending = "auto"
+
+[tool.bandit]
+exclude_dirs = ["venv", "migrations", "staticfiles", "media"]
+skips = ["B101"]
+
+[tool.coverage.run]
+source = ["catalog", "service", "ks_klimat_kh", "company_info"]
+omit = ["*/migrations/*", "*/tests/*", "manage.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true

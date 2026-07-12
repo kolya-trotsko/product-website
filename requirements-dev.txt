@@ -1,0 +1,6 @@
+-r requirements.txt
+
+bandit==1.8.6
+coverage==7.10.6
+pip-audit==2.9.0
+ruff==0.12.4
