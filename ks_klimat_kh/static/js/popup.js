@@ -9,11 +9,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function openPopup() {
-        popupContainer.style.display = "flex";
+        popupContainer.classList.add("is-open");
+        const target = popupContainer.querySelector(".form-errors[tabindex], .input-field:invalid, .input-field");
+        if (target) {
+            target.focus();
+        }
     }
 
     function closePopup() {
-        popupContainer.style.display = "none";
+        popupContainer.classList.remove("is-open");
+        showPopupButton.focus();
     }
 
     showPopupButton.addEventListener("click", openPopup);
@@ -30,8 +35,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
     document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && popupContainer.style.display === "flex") {
+        if (event.key === "Escape" && popupContainer.classList.contains("is-open")) {
             closePopup();
         }
     });
+    if (popupContainer.classList.contains("is-open")) {
+        openPopup();
+    }
 });

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Помилка сервера | KS KLIMAT KH{% endblock %}
+
+{% block content %}
+<section class="error-page">
+    <h1>Помилка сервера</h1>
+    <p>Спробуйте оновити сторінку пізніше або зв'яжіться з нами напряму.</p>
+    <a href="{% url 'home' %}">На головну</a>
+</section>
+{% endblock %}

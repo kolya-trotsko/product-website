@@ -137,6 +137,10 @@ img {
     justify-content: center;
 }
 
+.popup.is-open {
+    display: flex;
+}
+
 .popup-content {
     background-color: #fff;
     padding: 30px;

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Некоректний запит | KS KLIMAT KH{% endblock %}
+
+{% block content %}
+<section class="error-page">
+    <h1>Некоректний запит</h1>
+    <p>Перевірте адресу сторінки або поверніться до каталогу.</p>
+    <a href="{% url 'catalog' %}">Перейти до каталогу</a>
+</section>
+{% endblock %}

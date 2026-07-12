@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Доступ заборонено | KS KLIMAT KH{% endblock %}
+
+{% block content %}
+<section class="error-page">
+    <h1>Доступ заборонено</h1>
+    <p>У вас немає доступу до цієї сторінки.</p>
+    <a href="{% url 'home' %}">На головну</a>
+</section>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Сторінку не знайдено | KS KLIMAT KH{% endblock %}
+
+{% block content %}
+<section class="error-page">
+    <h1>Сторінку не знайдено</h1>
+    <p>Сторінка могла бути переміщена або адреса містить помилку.</p>
+    <a href="{% url 'catalog' %}">Перейти до каталогу</a>
+</section>
+{% endblock %}
